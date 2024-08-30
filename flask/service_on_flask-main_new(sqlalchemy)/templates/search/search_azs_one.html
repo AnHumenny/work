@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <!-- кастомные стили -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <title>Поиск </title>
+{% include 'menu.html' %}
+</head>
+<body>
+
+    <table class="main-table" id="main-table" width="90%" align="center">
+        <tr class="table-string">
+        <th class="table-string" colspan="7">{{ title }}<tr>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item">   ip </th>
+             <th class="title-table table-item">  номер АЗС </th>
+             <th class="title-table table-item">  адрес АЗС </th>
+             <th class="title-table table-item">  тип АЗС </th>
+             <th class="title-table table-item">  регион </th>
+             <th class="title-table table-item">  комментарий </th>
+             <th class="title-table table-item">  геопозиция </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item">   {{ azs.ip }} </th>
+             <th class="title-table table-item">  {{ azs.number }} </th>
+             <th class="title-table table-item">  {{ azs.address }} </th>
+             <th class="title-table table-item">  {{ azs.tip }} </th>
+             <th class="title-table table-item">  {{ azs.region }} </th>
+             <th class="title-table table-item">  {{ azs.comment | safe}} </th>
+             <th class="title-table table-item">  {{ azs.geo }} </th>
+        </tr>
+
+
+    </table>
+</body>
+</html>
+
