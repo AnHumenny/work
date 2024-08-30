@@ -1,1 +1,5 @@
-PyMySQL~=1.1.1
+async-tkinter-loop==0.9.3
+connect==0.2
+mysql-connector-python-rf==2.2.2
+PyMySQL==1.1.1
+typing_extensions==4.12.2
