@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Админ-Панель</title>
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- иконки fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	{% include 'menu.html' %}
+</head>
+<body>
+{% block content %}
+{% include 'hel.html' %}
+<!-- Admin Panel Layout -->
+<div class="container-fluid">
+	<div class="row">
+		<!-- Sidebar Menu -->
+		<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+			<div class="position-sticky pt-3">
+			    <ul class="nav flex-column">
+				<li class="nav-item">
+                                    {% include 'menu_left.html' %}
+                                </li>
+			    </ul>
+			</div>
+		</nav>
+		<!-- Main Content -->
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h5>Редактировать в info</h5>
+				</div>
+
+				<!-- Content -->
+		<div class="d-flex align-items-start">
+                    <table width=100%" class="add_content-table"><tr><td>
+                        <form class="d-flex" action="{{ url_for('edit_fttx_info') }}"  enctype="multipart/form-data" method="post">
+		        <table width="95%" class="add_content-table">
+                        <tr><td class="td-item" width="25%">
+                             <input class="form-control" type="hidden" value="{{ ssid }}"
+                                 aria-label="docssid" name="docssid" size="15">
+                                 <input class="form-control" type="search"
+                                        aria-label="Реестр" value="{{ reestr }}" name="docreestr" size="10">
+                                 </td>
+                                 <td>
+                                     <div class="form-group">
+                                     <!-- элемент input с id = datetimepicker1 -->
+                                         <div class="input-group" id="datetimepicker1">
+                                              <input type="date" class="form-control" value="{{ data }}"
+                                                     aria-label="Дата" name="docdata" >
+                                         <span class="input-group-addon">
+                                     <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Инициализация виджета "Bootstrap datetimepicker" -->
+                        <script>
+                        $(function () {
+                        // идентификатор элемента (например: #datetimepicker1), для которого необходимо инициализировать виджет Bootstrap DateTimePicker
+                        $('#datetimepicker1').datetimepicker();
+                        });
+                        </script>
+                        </td>
+                        <td width="50%" colspan="2">
+                        <input class="form-control me-1" type="search" value="{{ city }}"
+                               aria-label="Город" name="doccity" size="15">
+                        </td><td></td></tr>
+<tr><td><br></td></tr>
+                        <tr><td width="50%" colspan="2">
+                        <input class="form-control me-2"  type="search" value="{{ street }}"
+                               aria-label="Улица" name="docstreet">
+                        </td>
+                        <td>
+                        <input class="form-control me-2"  type="search" value="{{ home }}"
+                                   aria-label="Дом" name="dochome" size="15">
+                        </td>
+                        <td>
+                        <input class="form-control me-2" type="search" value="{{ apartment }}"
+                                        aria-label="Квартира" name="docapartment" size="15">
+<tr><td><br></td></tr>
+                        <tr><td colspan="4">
+                            <input class="form-control me-2" type="search" value="{{ name }}"
+                                        aria-label="ФИО" name="docname" size="15">
+                        </td></tr>
+<tr><td><br></td></tr>
+                        <tr><td width="25%">
+                            <input class="form-control me-2" type="search" value="{{ cable_1 }}"
+                                        aria-label="кабель 1" name="doccable_1">
+                        </td>
+                        <td width="25%">
+                            <input class="form-control me-2" type="search" value="{{ cable_2 }}"
+                                        aria-label="кабель 2" name="doccable_2" size="15">
+                        </td>
+                        <td width="25%">
+                            <input class="form-control me-2" type="search" value="{{ cable_3 }}"
+                                        aria-label="кабель 3" name="doccable_3" size="15">
+                        </td >
+                        <td class="td-item" width="25%">
+                            <input class="form-control me-2" type="search" value="{{ connector }}"
+                                        aria-label="коннектор" name="docconnector" size="15">
+                        </td></tr>
+<tr><td><br></td></tr>
+                        <tr><td colspan="4" align="center">
+                            <button class="btn btn-outline-success" type="submit">Изменить запись info</button>
+                            </td></tr>
+                         <tr><td colspan="4" align="center">&nbsp;</td></tr>
+                            </table>
+                     </form>
+                    </td></tr>
+                    </table>
+				</div>
+                   <table class="main-table" id="main-table">
+                       <tr class="table-string">
+                           {% for _, value in ssid_result.items() %}
+                       <td class="content-table table-item">{{ value }} </td>
+                           {% endfor %}
+                       </tr>
+                   </table>
+               </main>
+	  </div>
+    </div>
+{% endblock %}
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

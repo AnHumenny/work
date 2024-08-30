@@ -1,0 +1,9 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="#"></a>
+		<div class="d-flex align-items-center">
+		    <span class="me-3">Привет, {{ session['user_id'] }}</span>
+			<a href="{{ url_for('logout') }}" class="btn btn-outline-secondary">Выход</a>
+		</div>
+	</div>
+</nav>

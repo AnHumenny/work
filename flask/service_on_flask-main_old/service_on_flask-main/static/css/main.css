@@ -1,0 +1,62 @@
+
+<style>
+        .main-table{
+            position: absolute;
+            top: 0%;
+            left: 50%;
+            transform: translate(-50%, 50px);
+
+            width: 90%;
+            border-collapse: collapse;
+            border: 1px solid #F2F2F2;
+            box-shadow: 0px 0px 20px rgb(0 0 0 / 8%);
+        }
+
+        .title-table{
+            text-align: start;
+            font-size: 12px;
+        }
+
+        .add_content-table{
+            font-size: 12px;
+            border-spacing: 10px;
+        }
+
+        .content-table{
+            font-size: 12px;
+        }
+
+    .table-item{
+        padding: 20px;
+        border: 1px solid #F2F2F2;
+
+        .td-item{
+        padding: 20px;
+        }
+    }
+    /* Стили для бокового меню */
+        #sidebarMenu {
+            min-height: 100vh; /* Высота на всю высоту вьюпорта */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для бокового меню */
+            z-index: 1000; /* Устанавливаем z-index, чтобы меню было поверх основного контента */
+        }
+
+        .sidebar .nav-link {
+            border-radius: 0; /* Убираем закругление углов */
+            color: #333; /* Цвет текста */
+        }
+
+        .sidebar .nav-link:hover {
+            background: #f8f9fa; /* Фон при наведении */
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff; /* Фон для активной ссылки */
+            color: white; /* Цвет текста для активной ссылки */
+        }
+
+        ol {
+        list-style-type:  none;
+        }
+    </style>
+
