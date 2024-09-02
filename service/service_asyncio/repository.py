@@ -102,7 +102,7 @@ class Repo:
             await session.close()
             return answer
 
-    @classmethod      #доработать!
+    @classmethod      
     async def update_info_fttx(cls, ssid, value):  #обновление комментария в основной таблице
         async with new_session() as session:
             q = update(DAllInfo).where(DAllInfo.id == ssid).values(comment=value)
@@ -130,7 +130,7 @@ class Repo:
             return answer
 
     @classmethod
-    async def select_replacement(cls):  # выборка в replacement последние 10 записей
+    async def select_replacement(cls):  # выборка в replacement последние 20 записей
         async with new_session() as session:
             query = select(DReplacement).order_by(DReplacement.id.desc()).limit(20)
             result = await session.execute(query)
