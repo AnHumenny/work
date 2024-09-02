@@ -78,10 +78,6 @@ class DInfo(Model):
     cable_3 = Column(Integer)
     connector = Column(Integer)
 
-    @classmethod
-    def sum(cls, value):
-        pass
-
 class DReplacement(Model):
     __tablename__ = "replacement"
     id = Column(Integer, primary_key=True, autoincrement=True)
