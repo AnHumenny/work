@@ -65,8 +65,6 @@ class Repo:
             query = select(DBaseStation).where(DBaseStation.address.like(f"%{address}%"))
             result = await session.execute(query)
             answer = result.scalars().all()
-            for row in result:
-                print(row.address)
             await session.commit()
             await session.close()
             return answer
