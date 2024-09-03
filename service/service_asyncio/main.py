@@ -6,6 +6,7 @@ from tkinter import ttk
 from async_tkinter_loop import async_handler, async_mainloop
 import csv
 import tkinter.messagebox as mb
+import lists
 
 class Win(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -36,7 +37,7 @@ class Win(tk.Tk):
         self.frame_1.grid(row=0, column=0, rowspan=5, pady=50, sticky=N)
         self.frame_search = Frame(self, width=1020, height=6)
         self.frame_search.grid(row=0, column=1, pady=10, sticky=E)
-        self.frame_2 = Label(self, relief=SUNKEN, width=1020, height=700)
+        self.frame_2 = Label(self, relief=SUNKEN, width=1020, height=680)
         self.frame_2.grid(row=1, column=1, pady=5)
         self.frame_3 = Label(self.frame_2, relief=SUNKEN, background='#e2e2e2', width=1020, height=700)
         self.frame_3.grid(row=1, column=1)
@@ -76,42 +77,42 @@ class Win(tk.Tk):
     # трассы fttx
     @async_handler
     async def fttx_1(self):
-        label_1 = tk.Label(self.frame_2, image=self.img_fttx_1, width=1120, height=700)
+        label_1 = tk.Label(self.frame_2, image=self.img_fttx_1, width=1120, height=660)
         label_1.grid(row=0, column=0)
 
     @async_handler
     async def fttx_2(self):
-        label_1 = tk.Label(self.frame_2, image=self.img_fttx_2, width=1120, height=700)
+        label_1 = tk.Label(self.frame_2, image=self.img_fttx_2, width=1120, height=660)
         label_1.grid(row=0, column=0)
 
     @async_handler
     async def fttx_3(self):
-        label_1 = tk.Label(self.frame_2, image=self.img_fttx_3, width=1120, height=700)
+        label_1 = tk.Label(self.frame_2, image=self.img_fttx_3, width=1120, height=660)
         label_1.grid(row=0, column=0)
 
     @async_handler  #
     async def fttx_4(self):
-        label_1 = tk.Label(self.frame_2, image=self.img_fttx_4, width=1120, height=700)
+        label_1 = tk.Label(self.frame_2, image=self.img_fttx_4, width=1120, height=660)
         label_1.grid(row=0, column=0)
 
     @async_handler
     async def fttx_5(self):
-        label_1 = tk.Label(self.frame_2, image=self.img_fttx_5, width=1120, height=700)
+        label_1 = tk.Label(self.frame_2, image=self.img_fttx_5, width=1120, height=660)
         label_1.grid(row=0, column=0)
 
     @async_handler
     async def start(self):
         for widget in self.frame_2.winfo_children():
             widget.destroy()
-        label_1 = tk.Button(self.frame_2, image=self.img_fttx_1, width=540, height=230, command=self.fttx_1)
+        label_1 = tk.Button(self.frame_2, image=self.img_fttx_1, width=540, height=208, command=self.fttx_1)
         label_1.grid(row=0, column=0, padx=10)
-        label_2 = tk.Button(self.frame_2, image=self.img_fttx_2, width=540, height=230, command=self.fttx_2)
+        label_2 = tk.Button(self.frame_2, image=self.img_fttx_2, width=540, height=208, command=self.fttx_2)
         label_2.grid(row=0, column=1, padx=10)
-        label_3 = tk.Button(self.frame_2, image=self.img_fttx_3, width=540, height=230, command=self.fttx_3)
+        label_3 = tk.Button(self.frame_2, image=self.img_fttx_3, width=540, height=208, command=self.fttx_3)
         label_3.grid(row=1, column=0, padx=10)
-        label_4 = tk.Button(self.frame_2, image=self.img_fttx_4, width=540, height=230, command=self.fttx_4)
+        label_4 = tk.Button(self.frame_2, image=self.img_fttx_4, width=540, height=208, command=self.fttx_4)
         label_4.grid(row=1, column=1, padx=10)
-        label_4 = tk.Button(self.frame_2, image=self.img_fttx_5, width=540, height=230, command=self.fttx_5)
+        label_4 = tk.Button(self.frame_2, image=self.img_fttx_5, width=540, height=208, command=self.fttx_5)
         label_4.grid(row=2, column=0, padx=10)
 
     # блок АСКУЭ
@@ -120,13 +121,11 @@ class Win(tk.Tk):
         res = await Repo.select_ascue_all()
         for widget in self.frame_2.winfo_children():
             widget.destroy()
-        label_ascue = tk.Label(self.frame_2, width=1150, text='Город | улица | дом | ip')
-        label_ascue.pack()
-        for widget in self.frame_2.winfo_children():
-            widget.destroy()
         scrollbar = tk.Scrollbar(self.frame_2)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        my_list = tk.Text(self.frame_2, width=138, height=41, wrap=WORD, yscrollcommand=scrollbar.set)
+        my_label = tk.Label(self.frame_2, text="    Город      |      Улица        |      Дом      |     IP АСКУЭ    ")
+        my_label.pack()
+        my_list = tk.Text(self.frame_2, width=138, height=36, wrap=WORD, yscrollcommand=scrollbar.set)
         for row in res:
             my_list.insert(tk.END, f'{row.sity:14} | {row.street:20} | {row.namber:10} | {row.askue:10} \n')
             my_list.insert(tk.END, str('-') * 130)
@@ -140,11 +139,12 @@ class Win(tk.Tk):
         res = await Repo.select_keys_all()
         for widget in self.frame_2.winfo_children():
             widget.destroy()
-        label_ascue = tk.Label(self.frame_2, width=1150, text='Город | улица | дом | ip')
-        label_ascue.pack()
+        my_label = tk.Label(self.frame_2, text="     Улица        |      Дом      |       Количество подьездов "
+                                               "     |   IP АСКУЭ  |   ключ индивидуальный   |    ключ стандартный  ")
+        my_label.pack()
         scrollbar = tk.Scrollbar(self.frame_2)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        my_list = tk.Text(self.frame_2, width=138, height=41, wrap=WORD, yscrollcommand=scrollbar.set)
+        my_list = tk.Text(self.frame_2, width=138, height=36, wrap=WORD, yscrollcommand=scrollbar.set)
         for row in res:
             my_list.insert(tk.END, f'{row.street:14} | {row.home:20} |'
                                    f' {row.entrance:10} | {row.ind:10}| {row.stand:10} \n')
@@ -161,7 +161,7 @@ class Win(tk.Tk):
             widget.destroy()
         scrollbar = tk.Scrollbar(self.frame_2)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        my_list = tk.Text(self.frame_2, width=138, height=41, wrap=WORD, yscrollcommand=scrollbar.set)
+        my_list = tk.Text(self.frame_2, width=138, height=37, wrap=WORD, yscrollcommand=scrollbar.set)
         for row in res:
             my_list.insert(tk.END, f'{row.sity:14} | {row.bs:7} |'
                                    f' {row.street:15} | {row.namber:10}\n')
@@ -179,7 +179,7 @@ class Win(tk.Tk):
             widget.destroy()
         scrollbar = tk.Scrollbar(self.frame_2)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        my_list = tk.Text(self.frame_2, width=138, height=41, wrap=WORD, yscrollcommand=scrollbar.set)
+        my_list = tk.Text(self.frame_2, width=138, height=37, wrap=WORD, yscrollcommand=scrollbar.set)
         for row in res:
             my_list.insert(tk.END, f'{row.tip:14} \n')
             my_list.insert(tk.END, f' {row.comment} \n')
@@ -194,9 +194,12 @@ class Win(tk.Tk):
         res = await Repo.select_azs_all()
         for widget in self.frame_2.winfo_children():
             widget.destroy()
+        my_label = tk.Label(self.frame_2, text="     IP      |      Номер АЗС      |       Область "
+                                               "     |   Адрес  |   Комментарий  ")
+        my_label.pack()
         scrollbar = tk.Scrollbar(self.frame_2)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        my_list = tk.Text(self.frame_2, width=138, height=41, wrap=WORD, yscrollcommand=scrollbar.set)
+        my_list = tk.Text(self.frame_2, width=138, height=36, wrap=WORD, yscrollcommand=scrollbar.set)
         for row in res:
             my_list.insert(tk.END, f'{row.ip:14} | {row.number:6} |  {row.tip:10}  \n')
             my_list.insert(tk.END, f' {row.region:14} | {row.address} \n')
@@ -298,27 +301,13 @@ class Win(tk.Tk):
             widget.destroy()
         name_claster = tk.Label(self.frame_2, text="Список кластеров")
         name_claster.grid(row=0, column=0, padx=220)
-        self.list_claster = ttk.Combobox(self.frame_2, width=50, values=[
-                                                                         "МКН16",
-                                                                         "МКН17",
-                                                                         "МКН19",
-                                                                         "Аэродром",
-                                                                          ], state="readonly")
+        self.list_claster = ttk.Combobox(self.frame_2, width=50, values=lists.l_claster, state="readonly")
         self.list_claster.grid(row=1, column=0)
         search_claster = Button(self.frame_2, text="Поиск по кластерам", command=self.search_claster)
         search_claster.grid(row=2, column=0)
         name_street = tk.Label(self.frame_2, text="Список улиц")
         name_street.grid(row=0, column=1, padx=220)
-        self.list_street = ttk.Combobox(self.frame_2, width=50, values=[
-                                                                     "Мазурова",
-                                                                     "Головацкого",
-                                                                     "Хатаевича",
-                                                                     "Бородина",
-                                                                     "Кожара",
-                                                                     "Новополесская",
-                                                                     "Старочерниговская",
-                                                                     "Телегина",
-                                                                      ], state="readonly")
+        self.list_street = ttk.Combobox(self.frame_2, width=50, values=lists.l_street, state="readonly")
         self.list_street.grid(row=1, column=1)
         search_street = Button(self.frame_2, text="Поиск по улицам", command=self.result_street)
         search_street.grid(row=2, column=1)
@@ -331,11 +320,8 @@ class Win(tk.Tk):
         result = await Repo.select_claster(claster)
         for widget in self.frame_2.winfo_children():
             widget.destroy()
-        label_mkn_16 = tk.Label(self.frame_2, width=1020, text='МКН-16, МКН-17,МКН-19 --  ЖЭУ-25 | Телефон: 33-73-52,\n'
-                                                               'кластер Аэродром | ЖЭУ-25 | Телефон: 33-73-52'
-                                                               '\nНовополесская 2, Новополесская 4 | ЖЭУ-8 | '
-                                                               'Телефон: 21-72-10')
-        label_mkn_16.pack()
+        my_label = tk.Label(self.frame_2, text=lists.detail_info)
+        my_label.pack()
         if result is None:
             my_search_bs_label = tk.Label(self.frame_2, width=137, text=str(' '))
             my_search_bs_label.pack()
@@ -357,11 +343,9 @@ class Win(tk.Tk):
         result = await Repo.select_street(street)
         for widget in self.frame_2.winfo_children():
             widget.destroy()
-        label_mkn_16 = tk.Label(self.frame_2, width=1020, text='МКН-16, МКН-17,МКН-19 --  ЖЭУ-25 | Телефон: 33-73-52,\n'
-                                                               'кластер Аэродром | ЖЭУ-25 | Телефон: 33-73-52'
-                                                               '\nНовополесская 2, Новополесская 4 | ЖЭУ-8 | '
-                                                               'Телефон: 21-72-10')
-        label_mkn_16.pack()
+        my_label = tk.Label(self.frame_2, text=lists.detail_info)
+        my_label.pack()
+
         if result is None:
             my_search_bs_label = tk.Label(self.frame_2, width=137, text=str(' '))
             my_search_bs_label.pack()
