@@ -314,19 +314,10 @@ async def select_azs(msg: Message, state: FSMContext):
                 l = [0, Registred.name, msg.date, f"посмотрел данные по  {answer.street} {answer.namber}"]
                 await Repo.insert_into_date(l)
                 await state.clear()
-    #        if q is not None:
-    #            await msg.answer(f"Подьездов: {q.entrance} \nИндивидуальный ключЖ {q.ind}\nСтандартный ключ {q.stand}  " )
-    #                            
-     #           l = [0, Registred.name, msg.date, f"посмотрел данные по  {answer.street} {answer.namber}"]
-     #           await Repo.insert_into_date(l)
-     #           await state.clear()    
             else:
                 print('Пустой запрос')
                 await msg.answer(text=f"что то не то с адресом :(")
                 return
-
-
-
 
 
 #выборка действий пользователя
@@ -352,8 +343,6 @@ async def select_action_user(msg: Message, state: FSMContext):
         await state.clear()
         return
     else:
-        number = msg.text
-        print(number)
         if int(number) > 15:
             await msg.answer(f"{number} > 15, попробуй ещё раз :)")
             await state.clear()
