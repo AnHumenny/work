@@ -1,5 +1,5 @@
 from aiogram import types, F, Router, Bot
-from aiogram.types import Message
+from aiogram.types import Message, InputFile, BufferedInputFile
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.formatting import as_list
@@ -12,6 +12,7 @@ from aiogram.fsm.state import StatesGroup, State
 import keyboards
 from repository import Repo
 from time import sleep
+import config
 
 
 router = Router()
@@ -123,7 +124,7 @@ async def cmd_auth(msg: Message, state: FSMContext):
                 await msg.answer(
                     text=f"Набери\n/help, {result.name}"
                     )
-                await bot.send_message(tg_id, 'В бот зашёл ' + result.name)  #ошибка незакрытой сессии
+                await bot.send_message("my_tg_id", 'В бот зашёл ' + result.name)  #ошибка незакрытой сессии
                 await state.clear()
                 return
 
@@ -314,10 +315,19 @@ async def select_azs(msg: Message, state: FSMContext):
                 l = [0, Registred.name, msg.date, f"посмотрел данные по  {answer.street} {answer.namber}"]
                 await Repo.insert_into_date(l)
                 await state.clear()
+    #        if q is not None:
+    #            await msg.answer(f"Подьездов: {q.entrance} \nИндивидуальный ключЖ {q.ind}\nСтандартный ключ {q.stand}  " )
+    #                            
+     #           l = [0, Registred.name, msg.date, f"посмотрел данные по  {answer.street} {answer.namber}"]
+     #           await Repo.insert_into_date(l)
+     #           await state.clear()    
             else:
                 print('Пустой запрос')
                 await msg.answer(text=f"что то не то с адресом :(")
                 return
+
+
+
 
 
 #выборка действий пользователя
@@ -343,6 +353,8 @@ async def select_action_user(msg: Message, state: FSMContext):
         await state.clear()
         return
     else:
+        number = msg.text
+        print(number)
         if int(number) > 15:
             await msg.answer(f"{number} > 15, попробуй ещё раз :)")
             await state.clear()
@@ -474,3 +486,105 @@ async def send_random_value(callback: types.CallbackQuery):
     await Repo.insert_into_date(l)
     await callback.message.answer(f"{answer.tip} \n {answer.comment}")
     
+   
+   
+@router.message(Command("view_tracks"))
+async def cmd_random(message: types.Message):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await message.answer(
+            text=f"недостаточно прав доступа :("
+        )
+        return
+    else:
+        builder = InlineKeyboardBuilder()
+
+        builder.row(types.InlineKeyboardButton(
+            text="Кожара 65 > Мазурова > Головацкого > Кожара 59/2",
+            callback_data="fttx_1")
+        )
+        builder.row(types.InlineKeyboardButton(
+            text="Кожара 61 > Головацкого > Мазурова 40",
+            callback_data="fttx_2")
+        )
+        builder.row(types.InlineKeyboardButton(
+            text="Мазурова 117/А > Головацкого > Мазурова 59/3",
+            callback_data="fttx_3")
+        )
+        builder.row(types.InlineKeyboardButton(
+            text="Мазурова 111 > Бородина > Мазурова 73",
+            callback_data="fttx_4")
+        )
+
+        builder.row(types.InlineKeyboardButton(
+            text="Мазурова 14 > Головацкого > Хатаевича > Мазурова 16 ",
+            callback_data="fttx_5")
+        )
+
+        await message.answer(
+            "Что надо?",
+            reply_markup=builder.as_markup()
+        )
+
+@router.callback_query(F.data == "fttx_1")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        with open(f'{config.abs_path}fttx_1.png', 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'any_filename')
+        await callback.message.answer_photo(photo)
+
+
+@router.callback_query(F.data == "fttx_2")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        with open(f'{config.abs_path}fttx_2.png', 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'any_filename')
+        await callback.message.answer_photo(photo)
+
+
+@router.callback_query(F.data == "fttx_3")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        with open(f'{config.abs_path}fttx_3.png', 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'any_filename')
+        await callback.message.answer_photo(photo)
+
+
+@router.callback_query(F.data == "fttx_4")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        with open(f'{config.abs_path}fttx_4.png', 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'any_filename')
+        await callback.message.answer_photo(photo)
+
+
+@router.callback_query(F.data == "fttx_5")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        with open(f'{config.abs_path}/fttx_5.png', 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'any_filename')
+        await callback.message.answer_photo(photo)   
