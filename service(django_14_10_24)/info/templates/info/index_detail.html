@@ -1,0 +1,32 @@
+{% extends "index/base.html" %}
+
+        {% block content %}
+        {% for fttx in info_list %}
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> {{ fttx.reestr|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.full_name|safe }}
+            <th class="title-table table-item th-item"> {{ fttx.date_created|date:'Y-m-d' }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.city|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.street|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.home|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.apartment|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.name|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.cable_1|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.cable_2|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.cable_3|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.connector|safe }}
+            </th>
+        </tr>
+
+        {% endfor %}
+        {% endblock %}

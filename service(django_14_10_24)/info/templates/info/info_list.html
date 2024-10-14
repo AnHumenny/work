@@ -1,0 +1,59 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+
+    <table class="main-table table-item">
+        {% for fttx in info_list %}
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> {{ fttx.reestr|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.full_name|safe }}
+            <th class="title-table table-item th-item"> {{ fttx.date_created|date:'Y-m-d' }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.city|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.street|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.home|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.apartment|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.name|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.cable_1|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.cable_2|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.cable_3|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.connector|safe }}
+            </th>
+        </tr>
+
+        {% endfor %}
+    </table>
+
+    <table >
+        <tr class="table-string">
+            <th class="title-table table-item th-item">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo;В начало</a>      |
+                            <a href="?page={{ page_obj.previous_page_number }}">предыдущая страница</a>
+                        {% endif %}
+                    <span class="current">
+                        страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}      |
+                    </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая страница</a>      |
+                    <a href="?page={{ page_obj.paginator.num_pages }}">в конец &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        </th>
+        </tr>
+    </table>
+
+{% endblock %}
+
