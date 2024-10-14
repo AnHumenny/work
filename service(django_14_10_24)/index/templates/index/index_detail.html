@@ -1,0 +1,15 @@
+{% extends "index/base.html" %}
+
+        {% block content %}
+        <table >
+        <tr class="table-string">
+            <th class="title-table table-item th-item">{{ index.title|safe}}</th>
+        </tr>
+        <tr class="table-string">
+            <th class="add_date table-item th-item">{{ index.date_created|date:'Y-m-d H:i' }}</th>
+        </tr>
+        <tr class="table-string">
+            <th class="add_content-table table-item th-item">{{ index.content|safe }}</th>
+        </tr>
+            </table>
+        {% endblock %}
