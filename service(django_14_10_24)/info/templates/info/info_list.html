@@ -1,8 +1,9 @@
 {% extends "index/base.html" %}
 {% block content %}
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <table class="main-table table-item">
+        <tr><th><table width="80%">
         {% for fttx in info_list %}
         <tr class="table-string">
             <th class="title-table table-item th-item"> {{ fttx.reestr|safe }}
@@ -29,31 +30,44 @@
             <th class="title-table table-item th-item"> {{ fttx.connector|safe }}
             </th>
         </tr>
-
         {% endfor %}
-    </table>
 
-    <table >
         <tr class="table-string">
-            <th class="title-table table-item th-item">
+            <th class="title-table table-item th-item" colspan="11">
                 <div class="pagination">
                     <span class="step-links">
                         {% if page_obj.has_previous %}
-                            <a href="?page=1">&laquo;В начало</a>      |
-                            <a href="?page={{ page_obj.previous_page_number }}">предыдущая страница</a>
+                            <a href="?page=1">&laquo;<<start </a>      |
+                            <a href="?page={{ page_obj.previous_page_number }}">previos</a>
                         {% endif %}
                     <span class="current">
-                        страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}      |
+                        page {{ page_obj.number }} from {{ page_obj.paginator.num_pages }}      |
                     </span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">следующая страница</a>      |
-                    <a href="?page={{ page_obj.paginator.num_pages }}">в конец &raquo;</a>
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>      |
+                    <a href="?page={{ page_obj.paginator.num_pages }}">end>>&raquo;</a>
                 {% endif %}
             </span>
         </div>
         </th>
         </tr>
+        </table>
+        </th>
+        <th  valign="top" width="20%">
+            <table align="right">
+            <tr class="table-string">
+            <th class="title-table table-item th-item"  rowspan="500" valign="top">
+            <a class="nav-link" href="{% url 'download_actual_csv' %}" >  Скачать в csv текущий месяц
+                </a>
+            <br>
+                <a class="nav-link" href="{% url 'date_range' %}" >  Перейти к выбору дат
+                </a>
+            <br>
+        </th>
+        </tr>
     </table>
+    </th></tr>
+</table>
 
 {% endblock %}
 
