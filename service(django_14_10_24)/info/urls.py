@@ -13,4 +13,7 @@ urlpatterns = [
         views.InfoDetailView.as_view(),
         name="info-detail"
     ),
+    path('csv/actual', views.download_csv_actual_month, name='download_actual_csv'),
+    path('csv/', views.date_range_view, name='date_range'),
+
 ]
