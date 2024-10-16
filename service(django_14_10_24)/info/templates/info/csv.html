@@ -1,0 +1,26 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <table class="main-table table-item" align="center">
+        <tr class="table-string">
+            <th class="title-table table-item th-item" valign="top">
+            <br>
+            <br>
+            <form method="post">
+                {% csrf_token %}
+                <div>
+                {{ field.label_tag }}
+                {{ form.as_div }}
+                </div>
+                <button type="submit">Отправить</button>
+            </form>
+        </th>
+        </tr>
+    </table>
+
+
+{% endblock %}
+
