@@ -14,10 +14,10 @@
                         const chart = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: ['Бородина', 'Гагарина', 'Головацкого', 'Кожара', ' Мазурова', 'Мазурова', 'Новополесская', 'Речицкий', 'Речицкий проспект', 'Старочерниговская', 'Телегина', 'Хатаевича'],
+                            labels: {{ month|safe }},
                             datasets: [{
                                 label: '2024',
-                                data: {{ dat_count }},
+                                data: {{ dat_count|safe }},
                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 borderWidth: 1,
