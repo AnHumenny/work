@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'manual.apps.ManualConfig',
     'base_station.apps.BaseStationConfig',
     'info.apps.InfoConfig',
+    'filewiever.apps.FilewieverConfig',
     'gazprom.apps.GazpromConfig',
     'analutics.apps.AnaluticsConfig',
     'tinymce',
