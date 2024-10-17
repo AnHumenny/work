@@ -28,6 +28,7 @@ urlpatterns = [
     path('manual/', include('manual.urls')),
     path('fttx/', include('fttx.urls')),
     path('analutics/', include('analutics.urls')),
+    path('filewiever/', include('filewiever.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
 ]
