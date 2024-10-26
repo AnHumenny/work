@@ -1,2 +1,2 @@
-abs_path = "/home/andrei/myenv/bot_service/image/"
+abs_path = "path"
 API_TOKEN = 'TOKEN'
