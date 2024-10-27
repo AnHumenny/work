@@ -7,7 +7,6 @@ from create_db.database import (DGazprom, DManual, DUser, DVisitedUser, DBaseSta
 class Repo:
     @classmethod
     async def select_pass(cls, login, psw, tg_id):
-        print(psw,"\n")
         async with new_session() as session:
             tg_id = str(tg_id)
             pswrd = psw.decode("UTF-8")
@@ -27,7 +26,7 @@ class Repo:
             if status == "open" or status == "check":
                 q = select(DAccident).where(DAccident.status == status)
             else:
-                q = select(DAccident).where(DAccident.status == status).limit(5)
+                q = select(DAccident).where(DAccident.status == status).limit(10)
             result = await session.execute(q)
             answer = result.scalars()
             await session.commit()
@@ -84,8 +83,7 @@ class Repo:
             result = await session.execute(query)
             answer = result.scalars().all()
             return answer
-    #
-    #
+
     @classmethod
     async def select_bs_number(cls, number):
         async with new_session() as session:
