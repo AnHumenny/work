@@ -32,7 +32,7 @@ def vertical_bar(request):
          .values('street')
          .annotate(count=Count('id'))
          .order_by('street'))
-    month = []   #не отрабатывает в скрипте js.chart!!!
+    month = []   
     dat_count = []
     for row in s:
         temp = row.get("count")
