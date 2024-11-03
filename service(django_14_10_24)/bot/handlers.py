@@ -8,14 +8,13 @@ import base64
 from aiogram.utils.markdown import hlink
 import lists
 from aiogram.fsm.state import StatesGroup, State
+from html2markdown import convert
 import keyboards
 from repository import Repo
 from time import sleep
 import os
 
-
 router = Router()
-
 
 class SelectInfo(StatesGroup):
     view_all_fttx = State()
@@ -36,8 +35,8 @@ class Registred:
     admin_OK = False
     user_OK = False
     available_user_names = []
-    login = ''
-    name = ''
+    login = None
+    name = None
     count = 0
 
 
@@ -51,7 +50,7 @@ async def start_handler(msg: Message, state=FSMContext):
     await state.set_state(SelectInfo.register_user)
 
 
-#ввод и проверка пароля
+# ввод и проверка пароля
 @router.message(SelectInfo.register_user)
 async def cmd_auth(msg: Message, state: FSMContext):
     if Registred.count > 3:
@@ -88,8 +87,8 @@ async def cmd_auth(msg: Message, state: FSMContext):
             if Registred.count == 3:
                 await msg.answer(
                     text="Теперь ждём минуту :("
-                    )
-                await Repo.insert_into_visited_date(msg.from_user.id,  f"{msg.from_user.id} три неверных пароля :)")
+                )
+                await Repo.insert_into_visited_date(msg.from_user.id, f"{msg.from_user.id} три неверных пароля :)")
                 sleep(60)
             await state.clear()
             return
@@ -99,13 +98,13 @@ async def cmd_auth(msg: Message, state: FSMContext):
             if result is None:
                 await msg.answer(
                     text=f"Не зашло с паролем :("
-                    )
+                )
                 Registred.count += 1
                 if Registred.count == 3:
                     await msg.answer(
                         text="Теперь ждём минуту :("
-                        )
-                    await Repo.insert_into_visited_date(msg.from_user.id,  f"{msg.from_user.id} три хаотичных пароля :)")
+                    )
+                    await Repo.insert_into_visited_date(msg.from_user.id, f"{msg.from_user.id} три хаотичных пароля :)")
                     sleep(60)
                     await state.clear()
                     return
@@ -124,16 +123,15 @@ async def cmd_auth(msg: Message, state: FSMContext):
                     await Repo.insert_into_visited_date(Registred.name, f"зашёл в чат ")
                 await msg.answer(
                     text=f"Набери\n/help, {result.name}"
-                    )
-                await bot.send_message(408397675, 'В бот зашёл ' + result.name)  
+                )
+                await bot.send_message(408397675, 'В бот зашёл ' + result.name)  # ошибка незакрытой сессии
                 await state.clear()
                 return
 
-
-#мануал
+# мануал
 @router.message(F.text, Command("help"))
 async def cmd_help(msg: Message):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await msg.answer(
             text=f"Увы. Нет доступа к внутренней информации :("
         )
@@ -145,11 +143,10 @@ async def cmd_help(msg: Message):
             content = as_list(*lists.adm_help)
             await msg.answer(**content.as_kwargs())
 
-
-#список контактов по МТС
+# список контактов по МТС
 @router.message(F.text, Command('contact'))
 async def message_handler(msg: Message):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await msg.answer(
             text=f"недостаточно прав доступа :("
         )
@@ -158,11 +155,10 @@ async def message_handler(msg: Message):
         content = as_list(*lists.contact)
         await msg.answer(**content.as_kwargs())
 
-
-#поиск АЗС по номеру
+# поиск АЗС по номеру
 @router.message(StateFilter(None), Command("view_azs"))
 async def view_number_azs(msg: Message, state: FSMContext):
-    if Registred.login in lists.id_user and Registred.user_OK is True:  
+    if Registred.login in lists.id_user and Registred.user_OK is True:  # проверка статуса
         await msg.answer(
             text=f"номер АЗС",
             reply_markup=keyboards.make_row_keyboard(["АЗС-52"])
@@ -174,6 +170,7 @@ async def view_number_azs(msg: Message, state: FSMContext):
         )
         return
     await state.set_state(SelectInfo.view_azs)
+
 @router.message(SelectInfo.view_azs)
 async def select_azs(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -197,11 +194,10 @@ async def select_azs(msg: Message, state: FSMContext):
                 await msg.answer(text=f"Нет такой АЗС :(")
                 return
 
-
-#поиск инфы по fttx
+# поиск инфы по fttx
 @router.message(StateFilter(None), Command("view_all_info"))
 async def view_all_info(msg: Message, state: FSMContext):
-    if Registred.login in lists.id_user and Registred.user_OK is True:  
+    if Registred.login in lists.id_user and Registred.user_OK is True:  # проверка статуса
         await msg.answer(
             text=f"адрес через запятую с пробелом ",
             reply_markup=keyboards.make_row_keyboard(["Гомель, Мазурова, 77"])
@@ -213,6 +209,7 @@ async def view_all_info(msg: Message, state: FSMContext):
         )
         return
     await state.set_state(SelectInfo.view_all_fttx)
+
 @router.message(SelectInfo.view_all_fttx)
 async def select_azs(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -240,10 +237,11 @@ async def select_azs(msg: Message, state: FSMContext):
                 await msg.answer(text=f"что то не то с адресом :(")
                 return
 
-#поиск BS по number
+
+# поиск BS по number
 @router.message(StateFilter(None), Command("view_bs_id"))
 async def view_namber_bs(msg: Message, state: FSMContext):
-    if Registred.login in lists.id_user and Registred.user_OK is True:  
+    if Registred.login in lists.id_user and Registred.user_OK is True:  # проверка статуса
         await msg.answer(
             text=f"номер БС",
             reply_markup=keyboards.make_row_keyboard(["474"])
@@ -255,6 +253,7 @@ async def view_namber_bs(msg: Message, state: FSMContext):
         )
         return
     await state.set_state(SelectInfo.view_bs_number)
+
 @router.message(SelectInfo.view_bs_number)
 async def select_bs_id(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -276,7 +275,7 @@ async def select_bs_id(msg: Message, state: FSMContext):
 # добавить запись в info
 @router.message(StateFilter(None), Command("add_new_info"))
 async def add_new_info(msg: Message, state: FSMContext):
-    if Registred.login in lists.id_user and Registred.user_OK is True:  
+    if Registred.login in lists.id_user and Registred.user_OK is True:  # проверка статуса
         await msg.answer(
             text=f"добавить запись в info в формате \n"
                  "Номер реестра|Город|Улица|Дом|Квартира|ФИО|К1|К2|К3|коннектор"
@@ -288,10 +287,11 @@ async def add_new_info(msg: Message, state: FSMContext):
         )
         return
     await state.set_state(SelectInfo.add_new_info)
+
 @router.message(SelectInfo.add_new_info)
 async def insert_new_info(msg: Message, state: FSMContext):
     info = msg.text.split('|')
-    if len(info) != 10:   #или быстрый выход
+    if len(info) != 10:  # или быстрый выход
         await msg.answer(f"Что-то не так с данными :(")
         await state.clear()
         return
@@ -308,7 +308,7 @@ async def insert_new_info(msg: Message, state: FSMContext):
 # закрыть инцидент по номеру
 @router.message(StateFilter(None), Command("update_accident"))
 async def update_accident(msg: Message, state: FSMContext):
-    if Registred.login in lists.id_user and Registred.user_OK is True:  
+    if Registred.login in lists.id_user and Registred.user_OK is True:  # проверка статуса
         await msg.answer(
             text=f"Инцидент по номеру\n"
                  f"Номер|Статус(open, close, check)|Решение "
@@ -324,11 +324,10 @@ async def update_accident(msg: Message, state: FSMContext):
 @router.message(SelectInfo.update_accident)
 async def view_accident(msg: Message, state: FSMContext):
     info = msg.text.split('|')
-    if len(info) != 3:   #или быстрый выход
+    if len(info) != 3:  # или быстрый выход
         await msg.answer(f"Что-то не так с данными :(")
         await state.clear()
         return
-    print("статус", info[1])
     if info[1] not in lists.status:
         await msg.answer(f"Введён некорректный статус заявки")
         await state.clear()
@@ -341,18 +340,17 @@ async def view_accident(msg: Message, state: FSMContext):
         await Repo.update_accident(info)
         await Repo.insert_into_visited_date(Registred.name, f"Обновил информацию по инциденту {info[0]}")
         answer = await Repo.select_accident_number(info[0])
-        await msg.answer(f"Номер:  {answer.number} \nКатегория:  {answer.category} "
-                         f"\nСрок ликвидации:  {answer.sla}, \nВремя открытия:  {answer.datetime_open},"
-                         f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {answer.problem},"
-                         f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
-                         f"\nФИО:  {answer.name},  \nТелефон: {answer.phone},"
-                         f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {answer.comment},"
-                         f"\nРешение:  {answer.decide}, \nСтатус заявки:  {answer.status} "
-                         )
+        await msg.answer(f"Номер:  {convert(answer.number)} \nКатегория:  {convert(answer.category)} "
+                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:  {answer.datetime_open},"
+                         f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
+                         f"\nГород:  {convert(answer.city)}, \nАдрес:  {convert(answer.address)},"
+                         f"\nФИО:  {convert(answer.name)},  \nТелефон: {convert(answer.phone)},"
+                         f"\nАбонентский номер:  {convert(answer.subscriber)}, \nКомментарий:  {convert(answer.comment)},"
+                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {convert(answer.status)} ")
         await state.clear()
 
 
-#поиск BS по street
+# поиск BS по street
 @router.message(StateFilter(None), Command("view_bs_address"))
 async def view_address_bs(msg: Message, state: FSMContext):
     if Registred.login in lists.id_user and Registred.user_OK is True:  # проверка статуса
@@ -367,6 +365,7 @@ async def view_address_bs(msg: Message, state: FSMContext):
         )
         return
     await state.set_state(SelectInfo.view_bs_address)
+
 @router.message(SelectInfo.view_bs_address)
 async def select_bs_ad(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -392,11 +391,11 @@ async def select_bs_ad(msg: Message, state: FSMContext):
             return
         return
 
-#выборка действий пользователя
+# выборка действий пользователя
 @router.message(StateFilter(None), Command("view_action"))
 async def view_action_select(msg: Message, state: FSMContext):
     print('help', Registred.login, Registred.user_OK)
-    if Registred.login in lists.log_admin and Registred.admin_OK is True:  
+    if Registred.login in lists.log_admin and Registred.admin_OK is True:  # проверка статуса
         await msg.answer(
             text=f"Пользовательские запросы(количество): ",
             reply_markup=keyboards.make_row_keyboard(["15"])
@@ -408,6 +407,7 @@ async def view_action_select(msg: Message, state: FSMContext):
         )
         return
     await state.set_state(SelectInfo.select_action)
+
 @router.message(SelectInfo.select_action)
 async def select_action_user(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -432,7 +432,7 @@ async def select_action_user(msg: Message, state: FSMContext):
 
 @router.message(Command("view_man"))
 async def cmd_random(message: types.Message):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await message.answer(
             text=f"недостаточно прав доступа :("
         )
@@ -471,68 +471,88 @@ async def cmd_random(message: types.Message):
             text="Основные команды d-link",
             callback_data="8")
         )
+        builder.row(types.InlineKeyboardButton(
+            text="Huawei вход через boot-menu",
+            callback_data="9")
+        )
         await message.answer(
             "Что надо?",
             reply_markup=builder.as_markup()
         )
 
-
 @router.callback_query(F.data == "1")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(int(1))
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел man по Huawei-5100")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
-
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
 @router.callback_query(F.data == "2")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(2)
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по Ubiquti")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
-
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
 @router.callback_query(F.data == "3")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(3)
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по D-Link DGS-3000/3120")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
-
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
 @router.callback_query(F.data == "4")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(4)
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по Cisco точки доступа")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
-
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
 @router.callback_query(F.data == "5")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(5)
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по Mikrotik 3G стартовая конфигурация")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
-
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
 @router.callback_query(F.data == "6")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(6)
     await Repo.insert_into_visited_date(Registred.name, f"MikroTik 3G/4G сеть")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
-
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
 @router.callback_query(F.data == "7")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(7)
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по MikroTik FTTХ")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
-
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
 @router.callback_query(F.data == "8")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_manual(8)
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел Основные команды d-link")
-    await callback.message.answer(f"{answer.model} \n {answer.description}")
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
 
-#выборка открытых инцидентов
+@router.callback_query(F.data == "9")
+async def send_random_value(callback: types.CallbackQuery):
+    answer = await Repo.select_manual(9)
+    await Repo.insert_into_visited_date(Registred.name, f"посмотрел Huawei вход через boot-menu")
+    model = convert(answer.model)
+    description = convert(answer.description)
+    await callback.message.answer(f"{model} \n {description}")
+
+# выборка открытых инцидентов
 @router.message(Command("view_accident"))
 async def cmd_random(message: types.Message):
     if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
@@ -568,13 +588,13 @@ async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("open")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел открытые заявки ")
     for row in answer:
-        await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
-                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
-                                      f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {row.problem},"
-                                      f"\nГород:  {row.city}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
-                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {row.comment},"
-                                      f"\nРешение:  {row.decide}, \nСтатус заявки:  {row.status} ")
+        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
+                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
+                                      f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
+                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
+                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
 
 
 @router.callback_query(F.data == "check")
@@ -582,39 +602,42 @@ async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("check")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел заявки в статусе проверки")
     for row in answer:
-        await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
-                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
-                                      f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {row.problem},"
-                                      f"\nГород:  {row.city}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
-                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {row.comment},"
-                                      f"\nРешение:  {row.decide}, \nСтатус заявки:  {row.status} ")
-
+        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
+                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
+                                      f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
+                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
+                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
 
 @router.callback_query(F.data == "close")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("close")
+    await Repo.insert_into_visited_date(Registred.name, f"посмотрел заявки в статусе закрыто")
     for row in answer:
-        await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
-                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
-                                      f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {row.problem},"
-                                      f"\nГород:  {row.city}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
-                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {row.comment},"
-                                      f"\nРешение:  {row.decide}, \nСтатус заявки:  {row.status} ")
+        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
+                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
+                                      f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
+                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
+                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
+
 
 @router.callback_query(F.data == "stat")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_stat()
+    await Repo.insert_into_visited_date(Registred.name, f"посмотрел последние 10 заявок по инцидентам")
     for row in answer:
         await callback.message.answer(f"Номер:  {row.id} \nКто заходил:  {row.login} "
                                       f"\nДата:  {row.date_created}, \nДействие:  {row.action}"
-                                     )
+                                      )
 
-#поиск инцидента по номеру
+
+# поиск инцидента по номеру
 @router.message(StateFilter(None), Command("view_accident_number"))
 async def view_accident_number(msg: Message, state: FSMContext):
-    if Registred.login in lists.id_user and Registred.user_OK is True:  
+    if Registred.login in lists.id_user and Registred.user_OK is True:  # проверка статуса
         await msg.answer(
             text=f"номер инцидента",
             reply_markup=keyboards.make_row_keyboard(["148650"])
@@ -626,6 +649,7 @@ async def view_accident_number(msg: Message, state: FSMContext):
         )
         return
     await state.set_state(SelectInfo.view_accident)
+
 @router.message(SelectInfo.view_accident)
 async def insert_accident_number(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -639,22 +663,22 @@ async def insert_accident_number(msg: Message, state: FSMContext):
             await msg.answer(text=f"Неверный номер :(")
             await state.clear()
             return
-        await msg.answer(f"Номер:  {answer.number} \nКатегория:  {answer.category} "
-                                    f"\nСрок ликвидации:  {answer.sla}, \nВремя открытия:  {answer.datetime_open},"
-                                    f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {answer.problem},"
-                                    f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
-                                    f"\nФИО:  {answer.name},  \nТелефон: {answer.phone},"
-                                    f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {answer.comment},"
-                                    f"\nРешение:  {answer.decide}, \nСтатус заявки:  {answer.status} ")
+        await msg.answer(f"Номер:  {convert(answer.number)} \nКатегория:  {convert(answer.category)} "
+                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:  {answer.datetime_open},"
+                         f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
+                         f"\nГород:  {convert(answer.city)}, \nАдрес:  {convert(answer.address)},"
+                         f"\nФИО:  {convert(answer.name)},  \nТелефон: {convert(answer.phone)},"
+                         f"\nАбонентский номер:  {convert(answer.subscriber)}, \nКомментарий:  {convert(answer.comment)},"
+                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {convert(answer.status)} ")
         await state.clear()
         await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по инциденту - {number}")
         await state.clear()
         return
 
-#недокументированный запрос(отсутствует в lists)
+# недокументированный запрос(отсутствует в lists)
 @router.message(Command("view_tracks"))
 async def cmd_random(message: types.Message):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await message.answer(
             text=f"недостаточно прав доступа :("
         )
@@ -691,7 +715,7 @@ async def cmd_random(message: types.Message):
 
 @router.callback_query(F.data == "fttx_1")
 async def send_current_graf(callback: types.CallbackQuery):
-    if Registred.login not in lists.id_user and Registred.user_OK is False: 
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await callback.message.answer(
             text=f"Увы. Нет доступа к внутренней информации :("
         )
@@ -702,10 +726,9 @@ async def send_current_graf(callback: types.CallbackQuery):
             photo = BufferedInputFile(file.read(), 'any_filename')
         await callback.message.answer_photo(photo)
 
-
 @router.callback_query(F.data == "fttx_2")
 async def send_current_graf(callback: types.CallbackQuery):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await callback.message.answer(
             text=f"Увы. Нет доступа к внутренней информации :("
         )
@@ -718,7 +741,7 @@ async def send_current_graf(callback: types.CallbackQuery):
 
 @router.callback_query(F.data == "fttx_3")
 async def send_current_graf(callback: types.CallbackQuery):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await callback.message.answer(
             text=f"Увы. Нет доступа к внутренней информации :("
         )
@@ -731,7 +754,7 @@ async def send_current_graf(callback: types.CallbackQuery):
 
 @router.callback_query(F.data == "fttx_4")
 async def send_current_graf(callback: types.CallbackQuery):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await callback.message.answer(
             text=f"Увы. Нет доступа к внутренней информации :("
         )
@@ -744,7 +767,7 @@ async def send_current_graf(callback: types.CallbackQuery):
 
 @router.callback_query(F.data == "fttx_5")
 async def send_current_graf(callback: types.CallbackQuery):
-    if Registred.login not in lists.id_user and Registred.user_OK is False:  
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
         await callback.message.answer(
             text=f"Увы. Нет доступа к внутренней информации :("
         )
@@ -753,4 +776,4 @@ async def send_current_graf(callback: types.CallbackQuery):
         with open(f'{os.getcwd()}/image/fttx_5.png', 'rb') as file:
             photo = BufferedInputFile(file.read(), 'any_filename')
         await callback.message.answer_photo(photo)
-#end недокументированный запрос
+# end недокументированный запрос
