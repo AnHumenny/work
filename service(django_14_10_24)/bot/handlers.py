@@ -340,13 +340,13 @@ async def view_accident(msg: Message, state: FSMContext):
         await Repo.update_accident(info)
         await Repo.insert_into_visited_date(Registred.name, f"Обновил информацию по инциденту {info[0]}")
         answer = await Repo.select_accident_number(info[0])
-        await msg.answer(f"Номер:  {convert(answer.number)} \nКатегория:  {convert(answer.category)} "
-                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:  {answer.datetime_open},"
+        await msg.answer(f"Номер:  {answer.number} \nКатегория:  {answer.category} "
+                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:     {answer.datetime_open},"
                          f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
-                         f"\nГород:  {convert(answer.city)}, \nАдрес:  {convert(answer.address)},"
-                         f"\nФИО:  {convert(answer.name)},  \nТелефон: {convert(answer.phone)},"
-                         f"\nАбонентский номер:  {convert(answer.subscriber)}, \nКомментарий:  {convert(answer.comment)},"
-                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {convert(answer.status)} ")
+                         f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
+                         f"\nФИО:  {answer.name},  \nТелефон: {answer.phone},"
+                         f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {convert(answer.comment)},"
+                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {answer.status} ")
         await state.clear()
 
 
@@ -584,44 +584,55 @@ async def cmd_random(message: types.Message):
         )
 
 @router.callback_query(F.data == "open")
-async def send_random_value(callback: types.CallbackQuery):
+async def view_open(callback: types.CallbackQuery):
     answer = await Repo.select_accident("open")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел открытые заявки ")
-    for row in answer:
-        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
-                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
+    print("answer", answer)
+    if answer is None:
+        await callback.message.answer(f"Нет открытых заявок")
+        return
+    else:     
+        for row in answer:
+            await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
+                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
-                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
-                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
-                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
-                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
-
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
+                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
+                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
 
 @router.callback_query(F.data == "check")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("check")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел заявки в статусе проверки")
-    for row in answer:
-        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
-                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
+    if answer is None:
+        await callback.message.answer(f"Нет checked заявок")
+        return
+    else:     
+        for row in answer:
+            await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
+                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
-                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
-                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
-                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
-                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
+                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
+                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
 
 @router.callback_query(F.data == "close")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("close")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел заявки в статусе закрыто")
-    for row in answer:
-        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
-                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
+    if answer is None:
+        await callback.message.answer(f"Нет closed заявок")
+        return
+    await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
+                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
-                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
-                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
-                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
-                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
+                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
+                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
+
 
 
 @router.callback_query(F.data == "stat")
@@ -650,6 +661,7 @@ async def view_accident_number(msg: Message, state: FSMContext):
         return
     await state.set_state(SelectInfo.view_accident)
 
+
 @router.message(SelectInfo.view_accident)
 async def insert_accident_number(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -663,13 +675,13 @@ async def insert_accident_number(msg: Message, state: FSMContext):
             await msg.answer(text=f"Неверный номер :(")
             await state.clear()
             return
-        await msg.answer(f"Номер:  {convert(answer.number)} \nКатегория:  {convert(answer.category)} "
+        await msg.answer(f"Номер:  {answer.number} \nКатегория:  {answer.category} "
                          f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:  {answer.datetime_open},"
                          f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
-                         f"\nГород:  {convert(answer.city)}, \nАдрес:  {convert(answer.address)},"
-                         f"\nФИО:  {convert(answer.name)},  \nТелефон: {convert(answer.phone)},"
-                         f"\nАбонентский номер:  {convert(answer.subscriber)}, \nКомментарий:  {convert(answer.comment)},"
-                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {convert(answer.status)} ")
+                         f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
+                         f"\nФИО:  {answer.name},  \nТелефон: {answer.phone},"
+                         f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {convert(answer.comment)},"
+                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {answer.status} ")
         await state.clear()
         await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по инциденту - {number}")
         await state.clear()
@@ -713,6 +725,7 @@ async def cmd_random(message: types.Message):
             reply_markup=builder.as_markup()
         )
 
+
 @router.callback_query(F.data == "fttx_1")
 async def send_current_graf(callback: types.CallbackQuery):
     if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
@@ -725,6 +738,7 @@ async def send_current_graf(callback: types.CallbackQuery):
         with open(f'{os.getcwd()}/image/fttx_1.png', 'rb') as file:
             photo = BufferedInputFile(file.read(), 'any_filename')
         await callback.message.answer_photo(photo)
+
 
 @router.callback_query(F.data == "fttx_2")
 async def send_current_graf(callback: types.CallbackQuery):
