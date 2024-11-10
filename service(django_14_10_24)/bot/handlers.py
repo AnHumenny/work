@@ -344,7 +344,7 @@ async def view_accident(msg: Message, state: FSMContext):
                          f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:     {answer.datetime_open},"
                          f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
                          f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
-                         f"\nФИО:  {answer.name},  \nТелефон: {answer.phone},"
+                         f"\nФИО:  {answer.name},  \nТелефон: +{answer.phone},"
                          f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {convert(answer.comment)},"
                          f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {answer.status} ")
         await state.clear()
@@ -597,7 +597,7 @@ async def view_open(callback: types.CallbackQuery):
                                       f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
                                       f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
+                                      f"\nФИО:  {row.name},  \nТелефон: +{row.phone},"
                                       f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
                                       f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
 
@@ -606,7 +606,7 @@ async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("check")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел заявки в статусе проверки")
     if answer is None:
-        await callback.message.answer(f"Нет checked заявок")
+        await callback.message.answer(f"Нет check заявок")
         return
     else:     
         for row in answer:
@@ -614,7 +614,7 @@ async def send_random_value(callback: types.CallbackQuery):
                                       f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
                                       f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
+                                      f"\nФИО:  {row.name},  \nТелефон: +{row.phone},"
                                       f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
                                       f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
 
@@ -625,11 +625,12 @@ async def send_random_value(callback: types.CallbackQuery):
     if answer is None:
         await callback.message.answer(f"Нет closed заявок")
         return
-    await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
+    for row in answer:    
+        await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
                                       f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
                                       f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: {row.phone},"
+                                      f"\nФИО:  {row.name},  \nТелефон: +{row.phone},"
                                       f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
                                       f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
 
@@ -676,10 +677,10 @@ async def insert_accident_number(msg: Message, state: FSMContext):
             await state.clear()
             return
         await msg.answer(f"Номер:  {answer.number} \nКатегория:  {answer.category} "
-                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:  {answer.datetime_open},"
+                         f"\nСрок ликвидации:  {answer.sla}, \nВремя открытия:  {answer.datetime_open},"
                          f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
                          f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
-                         f"\nФИО:  {answer.name},  \nТелефон: {answer.phone},"
+                         f"\nФИО:  {answer.name},  \nТелефон: +{answer.phone},"
                          f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {convert(answer.comment)},"
                          f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {answer.status} ")
         await state.clear()
