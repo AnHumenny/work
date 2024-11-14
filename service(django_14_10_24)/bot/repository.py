@@ -1,12 +1,13 @@
 from datetime import datetime
 from sqlalchemy import select, insert, update
-from create_db.database import (DGazprom, DManual, DUser, DVisitedUser, DBaseStation,
+from database import (DGazprom, DManual, DUser, DVisitedUser, DBaseStation,
                                 DAllInfo, DAccident, DAddInfo, new_session)
 
 
 class Repo:
     @classmethod
     async def select_pass(cls, login, psw, tg_id):
+        print(psw,"\n")
         async with new_session() as session:
             tg_id = str(tg_id)
             pswrd = psw.decode("UTF-8")
@@ -26,7 +27,7 @@ class Repo:
             if status == "open" or status == "check":
                 q = select(DAccident).where(DAccident.status == status)
             else:
-                q = select(DAccident).where(DAccident.status == status).limit(10)
+                q = select(DAccident).where(DAccident.status == status).limit(5)
             result = await session.execute(q)
             answer = result.scalars()
             await session.commit()
@@ -65,7 +66,7 @@ class Repo:
             await session.close()
             return answer
 
-    # insert into _visited_users
+    # # insert into _visited_users
     @classmethod
     async def insert_into_visited_date(cls, login, action):
         async with new_session() as session:
@@ -83,7 +84,8 @@ class Repo:
             result = await session.execute(query)
             answer = result.scalars().all()
             return answer
-
+    #
+    #
     @classmethod
     async def select_bs_number(cls, number):
         async with new_session() as session:
@@ -144,6 +146,7 @@ class Repo:
             cable_2 = int(info[7])
             cable_3 = int(info[8])
             connector = int(info[9])
+            # query = sqlalchemy.update(DProject).values(info) #почти рабочий вариант)) # хз как вставить актуальную дату вторым параметром в info :(
             query = await session.execute(insert(DAddInfo).values(reestr=reestr, date_created=date, city=city,
                                                                   street=street, home=home, apartment=apartment,
                                                                   name=name, cable_1=cable_1, cable_2=cable_2,
@@ -166,4 +169,15 @@ class Repo:
             answer = await session.execute(q)
             await session.commit()
             await session.close()
+            return answer
+
+    @classmethod
+    async def grafik_ring(cls, start_date, end_date):
+        async with new_session() as session:
+            query = select(DAddInfo).where(
+                DAddInfo.date_created.between(start_date, end_date)
+            )
+            result = await session.execute(query)
+            answer = result.scalars().all()
+            await session.commit()
             return answer
