@@ -1,0 +1,61 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+    <table class="main-table">
+        <tr class="table-string">
+            <th class="title-table table-item th-item" width="50"> ID
+            </th>
+            <th class="title-table table-item th-item" width="150"> Город
+            </th>
+            <th class="title-table table-item th-item" width="150"> Улица
+            </th>
+            <th class="title-table table-item th-item" width="100"> Дом
+            </th>
+            <th class="title-table table-item th-item"> Количество подьездов
+            </th>
+            <th class="title-table table-item th-item"> Ключ индивидуальный
+            </th>
+            <th class="title-table table-item th-item"> Ключ стандартный
+            </th>
+        </tr>
+        {% for key in key_list %}
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> {{ key.id|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ key.city|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ key.street|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ key.home|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ key.entrance|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ key.ind|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ key.stand|safe }}
+            </th>
+        </tr>
+        {% endfor %}
+        <tr class="table-string">
+            <th class="title-table table-item th-item" colspan="7">
+                <div class="pagination">
+                <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; start &laquo;</a>      |
+                    <a href="?page={{ page_obj.previous_page_number }}">&laquo;previos&laquo;</a>
+                {% endif %}
+                <span class="current">
+                        страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}      |
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">&raquo;next&raquo;</a>      |
+                    <a href="?page={{ page_obj.paginator.num_pages }}">&raquo; end &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        </th>
+        </tr>
+    </table>
+
+
+{% endblock %}

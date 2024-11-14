@@ -1,0 +1,25 @@
+{% extends "index/base.html" %}
+
+        {% block content %}
+        <table class="main-table table-item" width="100%">
+
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Тип оборудования
+            </th>
+            <th class="title-table table-item th-item"> {{ manual.type|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Модель оборудования
+            </th>
+            <th class="title-table table-item th-item"> {{ manual.model|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Инструкция
+            </th>
+            <th class="title-table table-item th-item"> {{ manual.description|safe }}
+            </th>
+        </tr>
+        </table>
+        {% endblock %}
