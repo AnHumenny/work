@@ -1,0 +1,66 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+    <table class="main-table">
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> ID
+            </th>
+            <th class="title-table table-item th-item"> IP
+            </th>
+            <th class="title-table table-item th-item"> Номер АЗС
+            </th>
+            <th class="title-table table-item th-item"> Тип оборудования
+            </th>
+            <th class="title-table table-item th-item"> Регион
+            </th>
+            <th class="title-table table-item th-item"> Комментарий
+            </th>
+            <th class="title-table table-item th-item"> Геопозиция
+            </th>
+        </tr>
+        {% for azs in gazprom_list %}
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> {{ azs.id|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ azs.ip|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ azs.number|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ azs.type|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ azs.region|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ azs.comment|safe }}
+            </th>
+            <th class="title-table table-item th-item">
+                <a href="https://yandex.by/maps/?ll={{ azs.geo }}">{{ azs.geo|safe }}</a>
+            </th>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <table >
+        <tr class="table-string">
+            <th class="title-table table-item th-item">
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo;В начало</a>      |
+                    <a href="?page={{ page_obj.previous_page_number }}">предыдущая страница</a>
+                {% endif %}
+
+                <span class="current">
+                        страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}      |
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая страница</a>      |
+                    <a href="?page={{ page_obj.paginator.num_pages }}">в конец &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        </th>
+        </tr>
+    </table>
+
+{% endblock %}

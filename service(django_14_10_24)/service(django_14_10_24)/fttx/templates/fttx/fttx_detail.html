@@ -1,0 +1,58 @@
+{% extends "index/base.html" %}
+
+        {% block content %}
+    <table>
+        <tr class="table-string" >
+            <th class="title-table table-item th-item" width="400">
+                <strong>Детальная информация по {{ fttx.city|safe }} {{ fttx.street|safe }} {{ fttx.number|safe }}</strong>
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item">
+            </th>
+
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> ID
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.id|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Город
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.city|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Кластер
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.claster|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Улица
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.street|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Номер дома
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.number|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Комментарий
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.description|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > IP АСКУЭ
+            </th>
+            <th class="title-table table-item th-item"> {{ fttx.askue|safe }}
+            </th>
+        </tr>
+    </table>
+        {% endblock %}

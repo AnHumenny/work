@@ -1,0 +1,105 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+     <table >
+         <tr><th>
+         <table>
+
+         <tr class="table-string">
+             <th class="title-table table-item th-item" width="100"> ID
+             </th>
+             <th class="title-table table-item th-item" width="150"> Город
+             </th>
+             <th class="title-table table-item th-item" width="150"> Кластер
+             </th>
+             <th class="title-table table-item th-item" width="100"> Улица
+             </th>
+             <th class="title-table table-item th-item" width="100"> Номер
+             </th>
+             <th class="title-table table-item th-item"> IP АСКУЭ
+             </th>
+         </tr>
+
+        {% for inc in fttx_list %}
+        <tr class="table-string" >
+            <th class="title-table table-item th-item"> {{ inc.id }}
+            </th>
+            <th class="title-table table-item th-item">{{ inc.city|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.claster|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.street|safe }}
+            </th>
+            <th class="title-table table-item th-item">
+                <a class="nav-link" href="{% url 'fttx-detail' inc.id %}">
+                    {{ inc.number|safe }}
+                </a>
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.askue }}
+            </th>
+        </tr>
+
+        {% endfor %}
+    </table>
+
+    <table >
+        <tr class="table-string">
+            <th class="title-table table-item th-item">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo;В начало</a>      |
+                            <a href="?page={{ page_obj.previous_page_number }}">предыдущая страница</a>
+                        {% endif %}
+                    <span class="current">
+                        страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}      |
+                    </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая страница</a>      |
+                    <a href="?page={{ page_obj.paginator.num_pages }}">в конец &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        </th>
+        </tr>
+    </table>
+    </th>
+
+    <th  valign="top">
+        <table valign="top">
+            <tr class="table-string"  valign="top">
+                <th class="title-table table-item th-item" colspan="4"> Гомель
+                </th>
+            </tr>
+            <tr class="table-string">
+                <th class="title-table table-item th-item" width="100">
+                    <a class="nav-link" href="{% url 'fttx-claster16-list' %}">
+                        МКН-16
+                    </a>
+                </th>
+                <th class="title-table table-item th-item"  width="100">
+                    <a class="nav-link" href="{% url 'fttx-claster17-list' %}">
+                        МКН-17
+                    </a>
+                </th>
+                <th class="title-table table-item th-item"  width="100">
+                    <a class="nav-link" href="{% url 'fttx-claster19-list' %}">
+                    МКН-19
+                    </a>
+                </th>
+                <th class="title-table table-item th-item"  width="100">
+                    <a class="nav-link" href="{% url 'fttx-claster-aerodrom-list' %}">
+                        Аэродром
+                    </a>
+                </th>
+            </tr>
+
+
+
+        </table>
+    </th>
+         </tr>
+     </table>
+
+{% endblock %}
+
