@@ -1,3 +1,6 @@
+import random
+from collections import OrderedDict
+import psycopg2
 from aiogram import types, F, Router, Bot
 from aiogram.types import Message, BufferedInputFile
 from aiogram.filters import Command, StateFilter
@@ -13,7 +16,12 @@ import keyboards
 from repository import Repo
 from time import sleep
 import os
-
+import numpy
+import matplotlib
+import matplotlib.pyplot as plt
+from create_db.conf import user, password, port, host, database
+from datetime import datetime
+import pytz
 router = Router()
 
 class SelectInfo(StatesGroup):
@@ -139,9 +147,9 @@ async def cmd_help(msg: Message):
     else:
         content = as_list(*lists.help)
         await msg.answer(**content.as_kwargs())
-        if Registred.admin_OK is True:
-            content = as_list(*lists.adm_help)
-            await msg.answer(**content.as_kwargs())
+        # if Registred.admin_OK is True:            #пока лочим, неактуально
+        #     content = as_list(*lists.adm_help)
+        #     await msg.answer(**content.as_kwargs())
 
 # список контактов по МТС
 @router.message(F.text, Command('contact'))
@@ -340,13 +348,13 @@ async def view_accident(msg: Message, state: FSMContext):
         await Repo.update_accident(info)
         await Repo.insert_into_visited_date(Registred.name, f"Обновил информацию по инциденту {info[0]}")
         answer = await Repo.select_accident_number(info[0])
-        await msg.answer(f"Номер:  {answer.number} \nКатегория:  {answer.category} "
-                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:     {answer.datetime_open},"
+        await msg.answer(f"Номер:  {convert(answer.number)} \nКатегория:  {convert(answer.category)} "
+                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:  {answer.datetime_open},"
                          f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
-                         f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
-                         f"\nФИО:  {answer.name},  \nТелефон: +{answer.phone},"
-                         f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {convert(answer.comment)},"
-                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {answer.status} ")
+                         f"\nГород:  {convert(answer.city)}, \nАдрес:  {convert(answer.address)},"
+                         f"\nФИО:  {convert(answer.name)},  \nТелефон: {convert(answer.phone)},"
+                         f"\nАбонентский номер:  {convert(answer.subscriber)}, \nКомментарий:  {convert(answer.comment)},"
+                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {convert(answer.status)} ")
         await state.clear()
 
 
@@ -584,56 +592,44 @@ async def cmd_random(message: types.Message):
         )
 
 @router.callback_query(F.data == "open")
-async def view_open(callback: types.CallbackQuery):
+async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("open")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел открытые заявки ")
-    print("answer", answer)
-    if answer is None:
-        await callback.message.answer(f"Нет открытых заявок")
-        return
-    else:     
-        for row in answer:
-            await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
-                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
+    for row in answer:
+        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
+                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
-                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: +{row.phone},"
-                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
-                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
+                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
+                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
+
 
 @router.callback_query(F.data == "check")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("check")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел заявки в статусе проверки")
-    if answer is None:
-        await callback.message.answer(f"Нет check заявок")
-        return
-    else:     
-        for row in answer:
-            await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
-                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
+    for row in answer:
+        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
+                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
-                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: +{row.phone},"
-                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
-                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
+                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
+                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
 
 @router.callback_query(F.data == "close")
 async def send_random_value(callback: types.CallbackQuery):
     answer = await Repo.select_accident("close")
     await Repo.insert_into_visited_date(Registred.name, f"посмотрел заявки в статусе закрыто")
-    if answer is None:
-        await callback.message.answer(f"Нет closed заявок")
-        return
-    for row in answer:    
-        await callback.message.answer(f"Номер:  {row.number} \nКатегория:  {row.category} "
-                                      f"\nСрок ликвидации:  {row.sla}, \nВремя открытия:  {row.datetime_open},"
+    for row in answer:
+        await callback.message.answer(f"Номер:  {convert(row.number)} \nКатегория:  {convert(row.category)} "
+                                      f"\nСрок ликвидации:  {convert(row.sla)}, \nВремя открытия:  {row.datetime_open},"
                                       f"\nВремя закрытия:  {row.datetime_close}, \nОписание проблемы:  {convert(row.problem)},"
-                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {row.address},"
-                                      f"\nФИО:  {row.name},  \nТелефон: +{row.phone},"
-                                      f"\nАбонентский номер:  {row.subscriber}, \nКомментарий:  {convert(row.comment)},"
-                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {row.status} ")
-
+                                      f"\nГород:  {convert(row.city)}, \nАдрес:  {convert(row.address)},"
+                                      f"\nФИО:  {convert(row.name)},  \nТелефон: {convert(row.phone)},"
+                                      f"\nАбонентский номер:  {convert(row.subscriber)}, \nКомментарий:  {convert(row.comment)},"
+                                      f"\nРешение:  {convert(row.decide)}, \nСтатус заявки:  {convert(row.status)} ")
 
 
 @router.callback_query(F.data == "stat")
@@ -662,7 +658,6 @@ async def view_accident_number(msg: Message, state: FSMContext):
         return
     await state.set_state(SelectInfo.view_accident)
 
-
 @router.message(SelectInfo.view_accident)
 async def insert_accident_number(msg: Message, state: FSMContext):
     if msg.text is None:
@@ -676,17 +671,181 @@ async def insert_accident_number(msg: Message, state: FSMContext):
             await msg.answer(text=f"Неверный номер :(")
             await state.clear()
             return
-        await msg.answer(f"Номер:  {answer.number} \nКатегория:  {answer.category} "
-                         f"\nСрок ликвидации:  {answer.sla}, \nВремя открытия:  {answer.datetime_open},"
+        await msg.answer(f"Номер:  {convert(answer.number)} \nКатегория:  {convert(answer.category)} "
+                         f"\nСрок ликвидации:  {convert(answer.sla)}, \nВремя открытия:  {answer.datetime_open},"
                          f"\nВремя закрытия:  {answer.datetime_close}, \nОписание проблемы:  {convert(answer.problem)},"
-                         f"\nГород:  {answer.city}, \nАдрес:  {answer.address},"
-                         f"\nФИО:  {answer.name},  \nТелефон: +{answer.phone},"
-                         f"\nАбонентский номер:  {answer.subscriber}, \nКомментарий:  {convert(answer.comment)},"
-                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {answer.status} ")
+                         f"\nГород:  {convert(answer.city)}, \nАдрес:  {convert(answer.address)},"
+                         f"\nФИО:  {convert(answer.name)},  \nТелефон: {convert(answer.phone)},"
+                         f"\nАбонентский номер:  {convert(answer.subscriber)}, \nКомментарий:  {convert(answer.comment)},"
+                         f"\nРешение:  {convert(answer.decide)}, \nСтатус заявки:  {convert(answer.status)} ")
         await state.clear()
         await Repo.insert_into_visited_date(Registred.name, f"посмотрел данные по инциденту - {number}")
         await state.clear()
         return
+
+# создание графика
+def create_chart(temp):
+    result_query = dict()
+    list_query = []
+    set_street = set()
+    timezone = pytz.timezone('Europe/Moscow')
+    end_date = datetime.now(timezone)
+    start_date = datetime(end_date.year, 1, 1)
+    conn = psycopg2.connect(host=host, port=port, user=user,
+                            password=password, database=database)
+    plt.figure(figsize=(25, 18))
+    with conn.cursor() as cursor:
+        query = "SELECT date_created, street FROM info_info WHERE date_created BETWEEN %s AND %s"
+        cursor.execute(query, (start_date, end_date))
+        result = cursor.fetchall()
+        for row in result:
+            set_street.add(row[1])
+        sorted_street = sorted(set_street)
+        for query, row in enumerate(sorted_street):
+            cursor = conn.cursor()
+            query = "SELECT street FROM info_info WHERE date_created BETWEEN %s AND %s AND street = %s "
+            cursor.execute(query, (start_date, end_date, row))
+            result = cursor.fetchall()
+            for rows in result:
+                result_query[rows] = result_query.get(rows, 0) + 1  # в словарь result_query
+            list_query = [[key, value] for key, value in result_query.items()]
+        plt.minorticks_on()
+        plt.grid(which='major')  # включаем основную сетк
+        plt.grid(which='minor', linestyle='-.')  # включаем дополнительную сетку
+        plt.tight_layout()
+        plt.xlabel('Ось X', labelpad=80)  # Увеличиваем отступ для метки оси X
+        plt.ylabel('Ось Y', labelpad=80)  # Увеличиваем отступ для метки оси Y
+        plt.title(end_date, pad=20)  # Увеличиваем отступ для заголовка
+        plt.tight_layout()  # Оптимизируем расположение элементов графика
+        if temp == 'bar':
+            d = OrderedDict(sorted(list_query, key=lambda x: x[0]))  # вертикальная диаграмма
+            values = list(d.values())  # столбчатая диаграмма
+            plt.bar(range(len(d)), values, color='purple',
+                    tick_label=sorted_street)
+            axes = plt.subplot(1, 1, 1)
+            axes.tick_params(axis='x', labelrotation=55)
+        if temp == 'gorizontal':
+            d = OrderedDict(sorted(list_query, key=lambda x: x[0]))  # столбчатая диаграмма
+            values = list(d.values())  # столбчатая диаграмма
+            plt.barh(range(len(d)), values, tick_label=sorted_street)  # горизонтальная диаграмма
+        if temp == 'ring':
+            list_explode = []
+            d = OrderedDict(sorted(list_query, key=lambda x: x[0]))  # круговая диаграмма
+            values = list(d.values())
+            for row in range(len(list_query)):
+                list_explode.append(round(random.random() / 3, 4))  # случайное расстояние между долями
+            plt.pie(values, labels=sorted_street, autopct='%1.1f%%',
+                    explode=list_explode, rotatelabels=False)
+        if temp == 'pie':
+            list_explode = []
+            d = OrderedDict(sorted(list_query, key=lambda x: x[0]))  # кольцевая диаграмма
+            values = list(d.values())
+            for row in range(len(list_query)):
+                list_explode.append(round(random.random() / 3, 4))  # случайное расстояние между долями
+            plt.pie(values, labels=sorted_street, autopct='%1.1f%%',
+                    explode=list_explode, rotatelabels=False, shadow=False, wedgeprops=dict(width=0.5))
+
+    chart_path = 'chart.png'
+    plt.savefig(chart_path)
+    plt.close()
+    cursor.close()
+    return chart_path
+
+@router.message(Command("charts"))
+async def cmd_random(message: types.Message):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await message.answer(
+            text=f"недостаточно прав доступа :("
+        )
+        return
+    else:
+        builder = InlineKeyboardBuilder()
+        builder.add(types.InlineKeyboardButton(
+            text="chart BAR",
+            callback_data="bar")
+        )
+        builder.row(types.InlineKeyboardButton(
+            text="chart Gorizontal",
+            callback_data="gorizontal")
+        )
+        builder.add(types.InlineKeyboardButton(
+            text="chart Ring",
+            callback_data="ring")
+        )
+        builder.row(types.InlineKeyboardButton(
+            text="chart PIE",
+            callback_data="pie")
+        )
+
+        await message.answer(
+            "Что смотрим?",
+            reply_markup=builder.as_markup()
+        )
+
+@router.callback_query(F.data == "pie")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        await Repo.insert_into_visited_date(Registred.name, f"посмотрел график PIE")
+        temp = "pie"
+        chart_path = create_chart(temp)
+        with open(chart_path, 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'круговая диаграмма')
+            await callback.message.answer_photo(photo)
+        os.remove(chart_path)
+
+@router.callback_query(F.data == "gorizontal")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        await Repo.insert_into_visited_date(Registred.name, f"посмотрел график Gorizontal")
+        temp = "gorizontal"
+        chart_path = create_chart(temp)
+        with open(chart_path, 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'круговая диаграмма')
+            await callback.message.answer_photo(photo)
+        os.remove(chart_path)
+
+
+@router.callback_query(F.data == "ring")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        await Repo.insert_into_visited_date(Registred.name, f"посмотрел график RING")
+        temp = "ring"
+        chart_path = create_chart(temp)
+        with open(chart_path, 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'круговая диаграмма')
+            await callback.message.answer_photo(photo)
+        os.remove(chart_path)
+
+@router.callback_query(F.data == "bar")
+async def send_current_graf(callback: types.CallbackQuery):
+    if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
+        await callback.message.answer(
+            text=f"Увы. Нет доступа к внутренней информации :("
+        )
+        return
+    else:
+        await Repo.insert_into_visited_date(Registred.name, f"посмотрел график BAR")
+        temp = "bar"
+        chart_path = create_chart(temp)
+        with open(chart_path, 'rb') as file:
+            photo = BufferedInputFile(file.read(), 'круговая диаграмма')
+            await callback.message.answer_photo(photo)
+        os.remove(chart_path)
 
 # недокументированный запрос(отсутствует в lists)
 @router.message(Command("view_tracks"))
@@ -726,7 +885,6 @@ async def cmd_random(message: types.Message):
             reply_markup=builder.as_markup()
         )
 
-
 @router.callback_query(F.data == "fttx_1")
 async def send_current_graf(callback: types.CallbackQuery):
     if Registred.login not in lists.id_user and Registred.user_OK is False:  # проверка статуса
@@ -739,7 +897,6 @@ async def send_current_graf(callback: types.CallbackQuery):
         with open(f'{os.getcwd()}/image/fttx_1.png', 'rb') as file:
             photo = BufferedInputFile(file.read(), 'any_filename')
         await callback.message.answer_photo(photo)
-
 
 @router.callback_query(F.data == "fttx_2")
 async def send_current_graf(callback: types.CallbackQuery):
