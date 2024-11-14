@@ -1,0 +1,25 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+<table>
+    <tr VALIGN=top>
+        <th class="title-table table-item th-item" width="150">
+            {% include 'filewiever/menu.html' %}
+        </th>
+        <th class="title-table table-item th-item" width="80%">
+            <h1>Image Gallery</h1>
+                <div class="gallery">
+                    {% for image in images %}
+                        <div class="gallery-item">
+                            <img src="{{ image.image.url }}" alt="{{ image.title }}">
+                            <h3>{{ image.title }}</h3>
+                            <p>{{ image.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </th>
+        </tr>
+    </table>
+
+{% endblock %}
+

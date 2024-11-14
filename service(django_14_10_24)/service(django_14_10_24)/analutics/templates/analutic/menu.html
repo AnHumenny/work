@@ -1,0 +1,35 @@
+<table class="main-table table-item" width="100%">
+
+    <tr class="table-string" VALIGN=top >
+        <th class="title-table table-item th-item" width="300" >Выборка по диаграммам<br><br>
+        </th>
+    </tr>
+    <tr class="table-string" VALIGN=top >
+        <th class="title-table table-item th-item" width="300" >
+            <a class="nav-link" href="{% url 'actual-stat' %}">
+                Диаграмма на текущий год
+            </a>
+        </th>
+    </tr>
+    <tr class="table-string" VALIGN=top >
+        <th class="title-table table-item th-item" width="300" ><br>
+             <a class="nav-link" href="{% url 'vertical-stat' %}">
+                 Вертикальный бар
+             </a>
+        </th>
+    </tr>
+    <tr class="table-string" VALIGN=top >
+        <th class="title-table table-item th-item" width="300" ><br>
+            <a class="nav-link" href="{% url 'all-year-stat' %}">
+                Статистика по всем годам
+            </a>
+        </th>
+    </tr>
+    <tr class="table-string" VALIGN=top >
+        <th class="title-table table-item th-item" width="300" ><br>
+            <a class="nav-link" href="{% url 'line-year-stat' %}">
+                Линейный стат по годам
+            </a>
+        </th>
+    </tr>
+</table>

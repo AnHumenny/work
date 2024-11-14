@@ -1,0 +1,55 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+
+    <table class="main-table table-item" width="100%">
+        <tr class="table-string" VALIGN=top >
+            <th>
+                {% include "analutic/menu.html" %}
+
+            </th>
+
+            <th valign="top" ><p>Статистика на текущий год</p>
+                <br><br>
+                <canvas id="myBarChart"></canvas>
+                    <script>
+                        const ctx = document.getElementById('myBarChart').getContext('2d');
+                        const chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ month|safe }},
+                            datasets: [{
+                                label: 'Статистика по улицам 2024',
+                                data: {{ dat_count }},
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                barPercentage: 0.5,
+                                categoryPercentage: 0.5
+                            },
+
+                        ]
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'end'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            },
+                        },
+                        barThickness: 30, // Установите ширину бара
+                        barBorderRadius: 12 // Устанавливаем закругление углов
+                    }
+                });
+            </script>
+            </th>
+        </tr>
+    </table>
+
+{% endblock %}
+

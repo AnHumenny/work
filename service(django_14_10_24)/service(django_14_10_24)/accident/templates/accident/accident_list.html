@@ -1,0 +1,115 @@
+{% extends "index/base.html" %}
+{% block content %}
+
+        <table class="main-table table-item" width="90%">
+        <tr class="table-string">
+            <th class="title-table table-item th-item">
+                <a class="nav-link" href="{% url 'accident-open-list' %}">    Открытые заявки
+                </a>
+            </th>
+            <th class="title-table table-item th-item">
+                <a class="nav-link" href="{% url 'accident-close-list' %}">  Закрытые заявки
+                </a>
+            </th>
+            <th class="title-table table-item th-item">
+                <a class="nav-link" href="{% url 'accident-check-list' %}">  На проверке
+                </a>
+            </th>
+            <th  valign="top" width="20%">
+            <th class="title-table table-item th-item"   valign="top">
+            <a class="nav-link" href="{% url 'download_actual_accident' %}" >  Скачать в csv текущий месяц
+                </a>
+            </th>
+        </tr>
+        </table>
+        <table class="main-table table-item">
+
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> ID
+            </th>
+            <th class="title-table table-item th-item"> Номер заявки
+            </th>
+            <th class="title-table table-item th-item"> Категория
+            </th>
+            <th class="title-table table-item th-item"> Sla
+            </th>
+            <th class="title-table table-item th-item"> Дата открытия
+            </th>
+            <th class="title-table table-item th-item"> Дата закрытия
+            </th>
+            <th class="title-table table-item th-item"> Описание проблемы
+            </th>
+            <th class="title-table table-item th-item"> Город
+            </th>
+             <th class="title-table table-item th-item">Адрес
+            </th>
+            <th class="title-table table-item th-item"> Статус
+            </th>
+        </tr>
+
+        {% for inc in accident_list %}
+        <tr class="table-string" >
+            <th class="title-table table-item th-item"> {{ inc.id|safe }}
+            </th>
+            <th class="title-table table-item th-item">
+                <a class="nav-link" href="{% url 'accident-detail' inc.id %}">
+                    {{ inc.number|safe }}
+                </a>
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.category|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.sla|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.datetime_open|date:'Y-m-d H:i' }}
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.datetime_close|date:'Y-m-d H:i' }}
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.problem|safe }}
+            </th>
+            <th class="title-table table-item th-item"> {{ inc.city|safe }}
+            </th>
+             <th class="title-table table-item th-item">{{ inc.address|safe }}
+            </th>
+
+            <th class="title-table table-item th-item">
+
+                {% if inc.status == "open" %}
+                <p class="open"> {{ inc.status | safe  }} </p>
+                {% endif %}
+                {% if inc.status == "check" %}
+                <p class="check"> {{ inc.status | safe  }} </p>
+                {% endif %}
+                {% if inc.status == "close" %}
+                <p> {{ inc.status | safe  }} </p>
+                {% endif %}
+
+            </th>
+        </tr>
+
+        {% endfor %}
+    </table>
+
+    <table >
+        <tr class="table-string">
+            <th class="title-table table-item th-item">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo;В начало</a>      |
+                            <a href="?page={{ page_obj.previous_page_number }}">предыдущая страница</a>
+                        {% endif %}
+                    <span class="current">
+                        страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}      |
+                    </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая страница</a>      |
+                    <a href="?page={{ page_obj.paginator.num_pages }}">в конец &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        </th>
+        </tr>
+    </table>
+
+{% endblock %}
+

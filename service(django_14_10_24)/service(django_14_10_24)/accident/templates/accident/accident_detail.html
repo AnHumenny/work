@@ -1,0 +1,105 @@
+{% extends "index/base.html" %}
+
+        {% block content %}
+    <table>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" >
+                <strong>Детальная информация по заявке {{ accident.number|safe }}</strong>
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item">
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> ID инцидента
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.id|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Номер инцидента
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.number|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Категория инцидента
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.category|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> СЛА
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.sla|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Дата открытия заявки
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.datetime_open|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Дата закрытия заявки
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.datetime_close|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Описание проблемы
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.problem|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Город
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.city|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Детальный адрес
+            </th>
+            <th class="title-table table-item th-item">{{ accident.address|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > ФИО абонента
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.name|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Контактные номер абонента
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.phone|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Пользовательский номер абонента
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.subscriber|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Комментарий
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.comment|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item"> Решение проблемы
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.decide|safe }}
+            </th>
+        </tr>
+        <tr class="table-string">
+            <th class="title-table table-item th-item" > Статус заявки
+            </th>
+            <th class="title-table table-item th-item"> {{ accident.status|safe }}
+            </th>
+        </tr>
+    </table>
+        {% endblock %}
