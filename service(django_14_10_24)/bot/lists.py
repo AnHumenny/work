@@ -1,16 +1,21 @@
 API_TOKEN = 'TOKEN'
 
 
-help = ["/help - мануал по боту\n",
+help = [
+        help = ["/help - мануал по боту\n",
         "/contact - контактная информация\n",
-        "/view_azs -  Газпром\n",
-        "/view_bs_id - БС по номеру\n",
-        "/view_bs_address - БС по адресу\n",
-        "/view_all_info - данные fttx\n",
-        "/view_man - manual\n",     #выборка buttons
+        "/view_azs - посмотреть автозаправки Газпром\n",
+        "/view_bs_id - посмотреть БС по номеру\n",
+        "/view_bs_address - посмотреть БС по адресу\n",
+        "/view_all_info - посмотреть данные fttx\n",
+        "/view_man - посмотреть manual\n",
         "/add_new_info - добавить в info\n",
         "/update_accident - обновить инцидент по номеру\n",
-      #   "/view_tracks - трассы"  #скрытое
+        "/charts - графики\n",
+        "/view_accident - посмотреть инциденты\n",
+        "/view_accident_number - посмотреть инциденты номеру\n",
+      #   "/view_tracks - трассы"
+        ]
         ]
 status = ["open", "close", "check"]
 
@@ -20,8 +25,6 @@ block_word = [
 
 
 adm_help = [
-            "/view_accident - посмотреть инциденты\n",  #выборка buttons
-            "/view_accident_number - посмотреть инциденты номеру\n",
            ]
 
 contact = [
