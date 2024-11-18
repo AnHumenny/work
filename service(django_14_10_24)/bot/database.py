@@ -3,7 +3,15 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 import asyncpg
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
-from create_db.conf import user, password, host, database
+from dotenv import load_dotenv
+load_dotenv()
+import os
+
+host = os.getenv('host')
+port = os.getenv('port')
+user = os.getenv('user')
+password = os.getenv('password')
+database = os.getenv('database')
 
 DATABASE_URL = f"postgresql+asyncpg://{user}:{password}@{host}/{database}"
 #engine = asyncpg.create_pool(DATABASE_URL)
