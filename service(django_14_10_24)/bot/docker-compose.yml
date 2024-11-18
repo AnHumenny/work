@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
+  image: postgres:14
   bot:
     image: python:3.11-slim  
-    container_name: service_bot
-    volumes:
-      - .:/app  
-    working_dir: /app  
+    container_name: bot_service
+    # Монтируем текущую директорию в контейнер
+    working_dir: /app  # Устанавливаем рабочую директорию
     environment:
       - TELEGRAM_TOKEN=${TOKEN}
       - DATABASE_URL=${DATABASE_URL}
     command: >
-      sh -c "pip install -r requirements.txt && python app.py"  
+      sh -c "pip install -r requirements.txt && python3.11 app.py"  # Установка зависимостей и запуск бота
