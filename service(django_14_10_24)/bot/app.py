@@ -1,11 +1,13 @@
 import asyncio
 import logging
+import os
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from lists import API_TOKEN
+from dotenv import load_dotenv
 from handlers import router
 
-
+load_dotenv()
+API_TOKEN = os.getenv('API_TOKEN')
 async def main():
     bot = Bot(token=API_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
@@ -15,3 +17,4 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
+
