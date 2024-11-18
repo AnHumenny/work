@@ -1,6 +1,3 @@
-API_TOKEN = 'TOKEN'
-
-
 help = [
         help = ["/help - мануал по боту\n",
         "/contact - контактная информация\n",
