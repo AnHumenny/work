@@ -1,10 +1,12 @@
+from dotenv import load_dotenv
+import os
+load_dotenv()
+API_TOKEN = os.getenv('API_TOKEN')
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from config import API_TOKEN
 from handlers import router
-
 
 async def main():
     bot = Bot(token=API_TOKEN)
