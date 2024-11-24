@@ -104,15 +104,15 @@ class Win(tk.Tk):
     async def start(self):
         for widget in self.frame_2.winfo_children():
             widget.destroy()
-        label_1 = tk.Button(self.frame_2, image=self.img_fttx_1, width=540, height=208, command=self.fttx_1)
+        label_1 = tk.Button(self.frame_2, image=self.img_fttx_1, width=540, height=208, command=lambda: self.fttx_1())
         label_1.grid(row=0, column=0, padx=10)
-        label_2 = tk.Button(self.frame_2, image=self.img_fttx_2, width=540, height=208, command=self.fttx_2)
+        label_2 = tk.Button(self.frame_2, image=self.img_fttx_2, width=540, height=208, command=lambda: self.fttx_2())
         label_2.grid(row=0, column=1, padx=10)
-        label_3 = tk.Button(self.frame_2, image=self.img_fttx_3, width=540, height=208, command=self.fttx_3)
+        label_3 = tk.Button(self.frame_2, image=self.img_fttx_3, width=540, height=208, command=lambda: self.fttx_3())
         label_3.grid(row=1, column=0, padx=10)
-        label_4 = tk.Button(self.frame_2, image=self.img_fttx_4, width=540, height=208, command=self.fttx_4)
+        label_4 = tk.Button(self.frame_2, image=self.img_fttx_4, width=540, height=208, command=lambda: self.fttx_4())
         label_4.grid(row=1, column=1, padx=10)
-        label_4 = tk.Button(self.frame_2, image=self.img_fttx_5, width=540, height=208, command=self.fttx_5)
+        label_4 = tk.Button(self.frame_2, image=self.img_fttx_5, width=540, height=208, command=lambda: self.fttx_5())
         label_4.grid(row=2, column=0, padx=10)
 
     # блок АСКУЭ
@@ -199,7 +199,8 @@ class Win(tk.Tk):
         my_label.pack()
         scrollbar = tk.Scrollbar(self.frame_2)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        my_list = tk.Text(self.frame_2, width=138, height=36, wrap=WORD, yscrollcommand=scrollbar.set)
+        my_list = tk.Text(self.frame_2, width=138, height=36, wrap=WORD,
+                          yscrollcommand=scrollbar.set)
         for row in res:
             my_list.insert(tk.END, f'{row.ip:14} | {row.number:6} |  {row.tip:10}  \n')
             my_list.insert(tk.END, f' {row.region:14} | {row.address} \n')
@@ -239,7 +240,7 @@ class Win(tk.Tk):
         my_search_bs_label.pack()
         my_search_bs = tk.Entry(self.frame_2, width=10, textvariable=self.searth_bs_namber)
         my_search_bs.pack()
-        button_search_bs = tk.Button(self.frame_2, text='Поиск по номеру базовой', command=self.searth_bs)
+        button_search_bs = tk.Button(self.frame_2, text='Поиск по номеру базовой', command=lambda: self.searth_bs())
         button_search_bs.pack()
         if bs_namber is not None:
             my_search_bs_label = tk.Label(self.frame_2, width=137, text=str(bs_namber.address))
@@ -250,7 +251,7 @@ class Win(tk.Tk):
         my_search_address = tk.Entry(self.frame_2, width=20, textvariable=self.searth_bs_address)
         my_search_address.pack()
         button_search_address = tk.Button(self.frame_2, text='Поиск по адресу базовой(частичное совпадение)',
-                                          command=self.searth_address)
+                                          command=lambda: self.searth_address())
         button_search_address.pack()
         if bs_address is None:
             my_search_bs_label = tk.Label(self.frame_2, width=137, text=str(' '))
@@ -258,7 +259,7 @@ class Win(tk.Tk):
         else:
             scrollbar = tk.Scrollbar(self.frame_2)
             scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-            my_list = tk.Text(self.frame_2, width=138, height=41, wrap=WORD, yscrollcommand=scrollbar.set)
+            my_list = tk.Text(self.frame_2, width=138, height=28, wrap=WORD, yscrollcommand=scrollbar.set)
             for row in bs_address:
                 my_list.insert(tk.END, f'{row.number:6} | {row.address:50} \n')
                 my_list.insert(tk.END, str('-') * 130)
@@ -289,8 +290,9 @@ class Win(tk.Tk):
         my_list.insert(tk.END, str('\n'))
         my_list.pack(side=tk.LEFT, fill=tk.BOTH)
 
-    #некореектный ввод быстрый поиск
-    async def show_warning(self):
+    #некорректный ввод быстрый поиск
+    @staticmethod
+    async def show_warning():
         msg = "Введены некорректные данные "
         mb.showwarning("Предупреждение", msg)
 
@@ -303,13 +305,13 @@ class Win(tk.Tk):
         name_claster.grid(row=0, column=0, padx=220)
         self.list_claster = ttk.Combobox(self.frame_2, width=50, values=lists.l_claster, state="readonly")
         self.list_claster.grid(row=1, column=0)
-        search_claster = Button(self.frame_2, text="Поиск по кластерам", command=self.search_claster)
+        search_claster = Button(self.frame_2, text="Поиск по кластерам", command=lambda: self.search_claster())
         search_claster.grid(row=2, column=0)
         name_street = tk.Label(self.frame_2, text="Список улиц")
         name_street.grid(row=0, column=1, padx=220)
         self.list_street = ttk.Combobox(self.frame_2, width=50, values=lists.l_street, state="readonly")
         self.list_street.grid(row=1, column=1)
-        search_street = Button(self.frame_2, text="Поиск по улицам", command=self.result_street)
+        search_street = Button(self.frame_2, text="Поиск по улицам", command=lambda: self.result_street())
         search_street.grid(row=2, column=1)
         my_list = tk.Text(self.frame_2, width=138, height=33)
         my_list.grid(columnspan=2)
@@ -411,6 +413,7 @@ class Win(tk.Tk):
     async def csv_export(self):
         date_1 = self.date_1.get()
         date_2 = self.date_2.get()
+        print('скрипт', date_1, date_2)
         if (date_1 is None or date_2 is None
                 or len(date_1.split('-')) != 3 or len(date_2.split('-')) != 3):
             self.start()
@@ -464,7 +467,7 @@ class Win(tk.Tk):
                     my_label_1 = tk.Label(self.frame_2, width=300, anchor=NW, padx=20)
                     my_label_1["text"] = key, value, 'абонента(ов)'
                     my_label_1.pack()
-            button_back = tk.Button(self.frame_2, text='Вернутся\n на ИНФО', command=self.start_import)
+            button_back = tk.Button(self.frame_2, text='Вернутся\n на ИНФО', command=lambda: self.start_import())
             button_back.pack()
 
     # раздел Инфо
@@ -478,7 +481,7 @@ class Win(tk.Tk):
         my_enter.pack(pady=10)
         my_list = tk.Entry(self.frame_2, width=110, textvariable=self.requests)
         my_list.pack(pady=5)
-        button_send_col = tk.Button(self.frame_2, text='Добавить запись', command=self.data_import)
+        button_send_col = tk.Button(self.frame_2, text='Добавить запись', command=lambda: self.data_import())
         button_send_col.pack(pady=5)
         result = await Repo.select_users()
         my_label = tk.Text(self.frame_2, width=138, height=6)
@@ -494,16 +497,16 @@ class Win(tk.Tk):
         my_date_1.grid(row=0, column=0, padx=10, pady=5)
         my_date_2 = tk.Entry(frame_3, width=10, textvariable=self.date_2)
         my_date_2.grid(row=1, column=0, padx=10, pady=5)
-        button_send_date = tk.Button(frame_3, text='Сформировать отчёт fttx\nYYYY-MM-DD', command=self.csv_export)
+        button_send_date = tk.Button(frame_3, text='Сформировать отчёт fttx\nYYYY-MM-DD', command=lambda: self.csv_export())
         button_send_date.grid(row=2, column=0, padx=70, pady=5)
         button_send_support = tk.Button(frame_3, text='Сформировать отчёт\nзамена оборудования',
-                                        command=self.support_csv_export)
+                                        command=lambda: self.support_csv_export())
         button_send_support.grid(row=2, column=1, padx=100, pady=5)
         my_date_3 = tk.Entry(frame_3, width=10, textvariable=self.date_3)
         my_date_3.grid(row=0, column=2, padx=10, pady=5)
         my_date_4 = tk.Entry(frame_3, width=10, textvariable=self.date_4)
         my_date_4.grid(row=1, column=2, padx=10, pady=5)
-        button_send = tk.Button(frame_3, text='Статистика по абонам\nYYYY-MM-DD', command=self.statistic)
+        button_send = tk.Button(frame_3, text='Статистика по абонам\nYYYY-MM-DD', command=lambda: self.statistic())
         button_send.grid(row=2, column=2, padx=120, pady=5)
         my_enter_replacement = tk.Label(self.frame_2, width=110,
                                         text='Добавить запись (YYYY-MM-DD, адрес, тип оборудования, проблема, кому передано), '
@@ -512,9 +515,9 @@ class Win(tk.Tk):
         my_replacement = tk.Entry(self.frame_2, width=110, textvariable=self.replace_ment)
 
         my_replacement.pack(pady=5)
-        button_send_replacement = tk.Button(self.frame_2, text='Добавить запись', command=self.replacement)
+        button_send_replacement = tk.Button(self.frame_2, text='Добавить запись', command=lambda: self.replacement())
         button_send_replacement.pack(pady=5)
-        result = await Repo.select_replacement()    # выборка последних 10 записей по оборудованию
+        result = await Repo.select_replacement()
         my_label = tk.Text(self.frame_2, width=138, height=6)
         for row in result:
             my_label.insert(tk.END, (f"{row.id:6} | {row.date} | {row.address.strip():34} |"
@@ -528,7 +531,7 @@ class Win(tk.Tk):
         my_update_baza = tk.Entry(self.frame_2, width=110, textvariable=self.update_baza)
         my_update_baza.delete('0', tk.END)
         my_update_baza.pack(pady=5)
-        button_send_update_baza = tk.Button(self.frame_2, text='Обновить запись', command=self.update_info_fttx)
+        button_send_update_baza = tk.Button(self.frame_2, text='Обновить запись', command=lambda: self.update_info_fttx())
         button_send_update_baza.pack(pady=5)
 
 
