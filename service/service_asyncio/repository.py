@@ -1,5 +1,4 @@
-from asyncmy.replication import table
-from sqlalchemy import select, insert, text, update, func
+from sqlalchemy import select, insert, update
 from database import (DGazprom, DManual, DBaseStation, DAllInfo, DKey, DConnFromBs,
                       new_session, DInfo, DReplacement)
 
@@ -65,6 +64,8 @@ class Repo:
             query = select(DBaseStation).where(DBaseStation.address.like(f"%{address}%"))
             result = await session.execute(query)
             answer = result.scalars().all()
+            for row in result:
+                print(row.address)
             await session.commit()
             await session.close()
             return answer
@@ -100,7 +101,7 @@ class Repo:
             await session.close()
             return answer
 
-    @classmethod      
+    @classmethod      #доработать!
     async def update_info_fttx(cls, ssid, value):  #обновление комментария в основной таблице
         async with new_session() as session:
             q = update(DAllInfo).where(DAllInfo.id == ssid).values(comment=value)
@@ -128,7 +129,7 @@ class Repo:
             return answer
 
     @classmethod
-    async def select_replacement(cls):  # выборка в replacement последние 20 записей
+    async def select_replacement(cls):  # выборка в replacement последние 10 записей
         async with new_session() as session:
             query = select(DReplacement).order_by(DReplacement.id.desc()).limit(20)
             result = await session.execute(query)
