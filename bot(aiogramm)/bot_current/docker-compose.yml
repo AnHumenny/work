@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:15
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+
+  bot:
+    image: python:3.11-slim
+    container_name: bot_current
+    working_dir: /bot_current
+    environment:
+      - TELEGRAM_TOKEN=${TOKEN}
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - .:/bot_current
+    command: >
+      sh -c "pip install -r requirements.txt && python3 bot.py"
