@@ -1,8 +1,11 @@
+from dotenv import load_dotenv
+import os
+load_dotenv()
+API_TOKEN = os.getenv('API_TOKEN')
 import asyncio
 import logging
 from asyncio import sleep
 from aiogram import Bot, Dispatcher, types
-import os
 import base64
 from aiogram import F
 from aiogram.fsm.context import FSMContext
@@ -13,10 +16,6 @@ import subprocess
 import lists
 import keyboards
 from repository import Repo
-from dotenv import load_dotenv
-
-load_dotenv()
-API_TOKEN = os.getenv('API_TOKEN')
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
