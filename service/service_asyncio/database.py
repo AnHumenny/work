@@ -1,10 +1,13 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
 from sqlalchemy import Column, Integer, String, Text, Date
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 
-engine = create_async_engine(
-    "mysql+asyncmy://login:password@localhost/database"
-)
+database_url = os.getenv('database_url')
+
+engine = create_async_engine(database_url)
 
 new_session = async_sessionmaker(engine, expire_on_commit=False)
 
@@ -78,4 +81,3 @@ class DReplacement(Model):
     equipment = Column(String(20))
     problem = Column(String(255))
     responsible = Column(String(50))
-
