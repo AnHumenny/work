@@ -1,13 +1,13 @@
-import asyncio
-import logging
-import os
-from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
-from handlers import router
-
+import os
 load_dotenv()
 API_TOKEN = os.getenv('API_TOKEN')
+import asyncio
+import logging
+from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
+from handlers import router
+
 async def main():
     bot = Bot(token=API_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
